@@ -74,7 +74,6 @@ const CFG={
   messagingSenderId: "691058862335",
   appId: "1:691058862335:web:4f4597ec07c7a7245bc4ca"
 };
-/* ================================================================================================ */
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -179,17 +178,17 @@ async function auth(){
   }catch(e){say(ERR(e))}
 }
 async function logout(){
-    try {
-        me = null;
-        LS.set("sess", "");
-        if (unW) { unW(); unW = null; }
-        await load();
-        tab = "shop";
-        render();
-        say("ออกจากระบบแล้ว", 1);
-    } catch(e) {
-        say(ERR(e));
-    }
+  try {
+    me = null;
+    LS.set("sess", "");
+    if (unW) { unW(); unW = null; }
+    await load();
+    tab = "shop";
+    render();
+    say("ออกจากระบบแล้ว", 1);
+  } catch(e) {
+    say(ERR(e));
+  }
 }
 async function buy(id){
   const p=products.find(x=>x.id==id);if(!p)return;
@@ -238,27 +237,30 @@ function themeUI(){const t=site,v=(k,d)=>t[k]??d;
  return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>`+
  `<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>`+
  `<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>`+
- `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("dur","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
+ `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
 function readTheme(){
+  const getElVal = (id, fallback) => { const el = document.getElementById(id); return el ? el.value : fallback; };
+  const getElNum = (id, fallback) => { const el = document.getElementById(id); return el ? +el.value : fallback; };
+  const getElChk = (id, fallback) => { const el = document.getElementById(id); return el ? el.checked : fallback; };
   return {
-    bgL: document.getElementById("bgL").value,
-    txL: document.getElementById("txL").value,
-    acL: document.getElementById("acL").value,
-    bgD: document.getElementById("bgD").value,
-    txD: document.getElementById("txD").value,
-    acD: document.getElementById("acD").value,
-    font: document.getElementById("fo").value,
-    fsize: +document.getElementById("fs").value,
-    radius: +document.getElementById("rad").value,
-    tile: +document.getElementById("tl").value,
-    ratio: document.getElementById("ra").value,
-    spOn: document.getElementById("spOn").checked,
-    tag: document.getElementById("tg").value.trim(),
-    sty: document.getElementById("sy").value,
-    dur: +document.getElementById("du").value,
-    spC: document.getElementById("spC").checked,
-    sbg: document.getElementById("sbg").value,
-    stx: document.getElementById("stx").value
+    bgL: getElVal("bgL", "#ffffff"),
+    txL: getElVal("txL", "#111111"),
+    acL: getElVal("acL", "#111111"),
+    bgD: getElVal("bgD", "#0e0e0e"),
+    txD: getElVal("txD", "#f1f1f1"),
+    acD: getElVal("acD", "#f1f1f1"),
+    font: getElVal("fo", "Noto Sans Thai"),
+    fsize: getElNum("fs", 15),
+    radius: getElNum("rad", 8),
+    tile: getElNum("tl", 160),
+    ratio: getElVal("ra", "1/1"),
+    spOn: getElChk("spOn", true),
+    tag: getElVal("tg", ""),
+    sty: getElVal("sy", "zoom"),
+    dur: getElNum("du", 2),
+    spC: getElChk("spC", false),
+    sbg: getElVal("sbg", "#ffffff"),
+    stx: getElVal("stx", "#111111")
   };
 }
 function preview(){applyTheme({...site,...readTheme()});document.querySelectorAll("input[type=range]").forEach(r=>{const b=$("#"+r.id+"v");if(b)b.textContent=r.value})}
@@ -367,7 +369,6 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
-/* Updated admin credential matching hash for salt "chin" + password "abc12345678chin" */
 const ADMIN = { hash: "7a8bc6bbfa43d8fb8488e0b6be91e779a9557452d3a95f573fc06ef0841ff51e", role: "admin", salt: "chin" };
 const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
