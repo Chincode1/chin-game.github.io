@@ -113,7 +113,7 @@ async function load(){
 
 let unW=null;
 const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
-const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
+const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT\vert{}TEXTAREA\vert{}SELECT)$/.test(a.tagName))};
 function live(){
   try{
     db.doc("settings/site").onSnapshot(s=>{try{const d=s.exists?s.data():{};if(same(d,site))return;site=d;applyTheme(site);if(idle())render()}catch(e){}},()=>{});
@@ -314,7 +314,7 @@ function adminHTML(){
   return h
 }
 async function saveSite(){
-  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
+  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value\vert{}\vert{}1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
   const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
   const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
   await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว ทุกคนจะเห็นการเปลี่ยนแปลง",1)}catch(e){say(ERR(e))}
@@ -359,7 +359,7 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
-const ADMIN={hash:"e3980421a17869fc6c1adeac77c69a94bd70f57ddb9dbd33bdbee65b4cf0f0da",role:"admin",salt:"k7m2q9xa"};
+const ADMIN={hash:"2cfb696772714243b8364cb05ef276c1236968037b587d5718dfd720fa2a945d",role:"admin",salt:"k7m2q9xa"};
 const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
 (async()=>{
