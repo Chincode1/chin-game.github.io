@@ -2,7 +2,10 @@
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ร้านเครดิต</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet"><style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
 :root{--bg:#fff;--tx:#111;--mu:#8a8a8a;--bd:#ececec;--ac:#111;--ac2:#fff;--ok:#16a34a;--er:#d92d20;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e0e;--tx:#f1f1f1;--mu:#8c8c8c;--bd:#242424;--ac:#f1f1f1;--ac2:#0e0e0e}}
@@ -63,6 +66,17 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 .rw{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--bd)}.rw:last-child{border:0}.ac{display:flex;gap:6px;flex-wrap:wrap}
 </style></head><body><div class="sp" id="sp0"></div><div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
 <script>
+/* ===== วาง firebaseConfig ของคุณตรงนี้ (จาก Firebase Console > Project settings > Your apps) ===== */
+const CFG={
+  apiKey:"",
+  authDomain:"",
+  projectId:"",
+  storageBucket:"",
+  messagingSenderId:"",
+  appId:""
+};
+/* ================================================================================================ */
+
 const $=s=>document.querySelector(s);
 const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in",ro=false;
@@ -75,7 +89,7 @@ const say=(m,ok)=>{let w=$("#tw");if(!w){w=document.createElement("div");w.id="t
   const x=()=>{t.classList.add("out");setTimeout(()=>t.remove(),250)};t.onclick=x;w.appendChild(t);setTimeout(x,3400)};
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
 const wref=()=>db.doc("wallets/"+me.u);
-const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีนี้ดูข้อมูลได้อย่างเดียว บันทึกไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
+const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีนี้ดูข้อมูลได้อย่างเดียว บันทึกไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ":e.code=="permission-denied"?"ไม่มีสิทธิ์เขียนฐานข้อมูล ตรวจ Firestore Rules":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
 function theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";LS.set("th",r.dataset.theme)}
 if(LS.get("th"))document.documentElement.dataset.theme=LS.get("th");
 function pic(file,max){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=()=>no(new Error("อ่านไฟล์รูปไม่ได้"));fr.onload=()=>{const i=new Image();i.onload=()=>{try{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL(/png$/.test(file.type)&&max<300?"image/png":"image/jpeg",.75))}catch(e){no(e)}};i.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองใช้ไฟล์ JPG/PNG"));i.src=fr.result};fr.readAsDataURL(file)})}
@@ -320,7 +334,7 @@ async function addProd(){
 }
 async function delProd(id){if(!await ask("ลบสินค้านี้?"))return;try{await db.doc("products/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
 
-/* ฐานข้อมูลสำรอง (เฉพาะกรณีเปิดนอก claude.ai) เก็บในเครื่องเท่านั้น */
+/* ฐานข้อมูลสำรอง (ใช้เมื่อยังไม่ได้ใส่ firebaseConfig) เก็บในเครื่องเท่านั้น */
 function mkDb(){
   const K="shopdb";let M={};
   const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M},wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
@@ -352,8 +366,21 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
   try{
     const real=await useCap("db");
     try{const us=await useCap("user");if(us&&real){const w=await us.can("data.write");if(w===false)ro=true}}catch(e){}
-    db=real||mkDb();
-    if(real){
+
+    /* Firebase: ใช้เมื่อเปิดนอก claude.ai และใส่ config แล้ว */
+    let fire=null;
+    try{
+      if(!real&&window.firebase&&CFG.apiKey&&CFG.projectId){
+        firebase.initializeApp(CFG);
+        fire=firebase.firestore();
+      }
+    }catch(e){console.error("Firebase init error:",e)}
+
+    db=real||fire||mkDb();
+    const shared=!!(real||fire);
+    if(!shared)console.warn("ยังไม่ได้ตั้งค่า Firebase: ข้อมูลเก็บในเครื่องนี้เท่านั้น");
+
+    if(shared){
       try{
         const a=await db.doc("accounts/admin").get();
         if(!a.exists&&!ro)await db.doc("accounts/admin").set(ADMIN);
@@ -374,7 +401,7 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
     }catch(e){console.error(e)}
     if(!me)await load();
     render();
-    if(real){live();liveWallet()}
+    if(shared){live();liveWallet()}
   }catch(e){
     console.error(e);
     $("#app").innerHTML=`<div class="c er">โหลดไม่สำเร็จ: ${esc(e.message||e.code)}</div>`;
