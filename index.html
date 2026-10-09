@@ -357,7 +357,7 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
-const ADMIN={hash:"8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",role:"admin1",salt:"abc12345678chin"};
+const ADMIN={hash:"1937db547847c94592a3449c256038166b1e6005b63bc3a6c528f3bb108259db",role:"admin",salt:"secure_secure"};
 const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
 (async()=>{
