@@ -4,6 +4,7 @@
 <title>ร้านเครดิต</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet"><style>
 :root{--bg:#fff;--tx:#111;--mu:#8a8a8a;--bd:#ececec;--ac:#111;--ac2:#fff;--ok:#16a34a;--er:#d92d20;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e0e;--tx:#f1f1f1;--mu:#8c8c8c;--bd:#242424;--ac:#f1f1f1;--ac2:#0e0e0e}}
 :root[data-theme="dark"]{--bg:#0e0e0e;--tx:#f1f1f1;--mu:#8c8c8c;--bd:#242424;--ac:#f1f1f1;--ac2:#0e0e0e}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Thai",system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.6}
@@ -64,7 +65,7 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in";
+let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in",ro=false;
 let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="topups";
 
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -74,7 +75,7 @@ const say=(m,ok)=>{let w=$("#tw");if(!w){w=document.createElement("div");w.id="t
   const x=()=>{t.classList.add("out");setTimeout(()=>t.remove(),250)};t.onclick=x;w.appendChild(t);setTimeout(x,3400)};
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
 const wref=()=>db.doc("wallets/"+me.u);
-const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีผู้เยี่ยมชมแบบดูอย่างเดียวบันทึกข้อมูลไม่ได้ กรุณาขอสิทธิ์ Contributor":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
+const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีนี้ดูข้อมูลได้อย่างเดียว บันทึกไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
 function theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";LS.set("th",r.dataset.theme)}
 if(LS.get("th"))document.documentElement.dataset.theme=LS.get("th");
 function pic(file,max){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=()=>no(new Error("อ่านไฟล์รูปไม่ได้"));fr.onload=()=>{const i=new Image();i.onload=()=>{try{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL(/png$/.test(file.type)&&max<300?"image/png":"image/jpeg",.75))}catch(e){no(e)}};i.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองใช้ไฟล์ JPG/PNG"));i.src=fr.result};fr.readAsDataURL(file)})}
@@ -94,7 +95,24 @@ async function load(){
   }
 }
 
-function head(){return `<header><div class="lg" onclick="home()">${site.logo?`<img src="${site.logo}">`:""}<span>${esc(site.name||"ร้านเครดิต")}</span></div><div class="hr">${me?`<span class="cr">${credits} เครดิต</span>`:""}<button class="ib" onclick="theme()" aria-label="ธีม">◐</button>${me?`<button class="ib" onclick="logout()">ออก</button>`:`<button class="b sm" onclick="goAuth('in')">เข้าสู่ระบบ</button>`}</div></header>`}
+/* ---- อัปเดตสดให้ทุกคนที่เปิดเว็บอยู่ ---- */
+let unW=null;
+const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
+const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
+function live(){
+  try{
+    db.doc("settings/site").onSnapshot(s=>{try{const d=s.exists?s.data():{};if(same(d,site))return;site=d;applyTheme(site);if(idle())render()}catch(e){}},()=>{});
+    db.collection("products").onSnapshot(q=>{try{const l=q.docs.map(x=>({id:x.id,...x.data()}));if(same(l,products))return;products=l;if(idle())render()}catch(e){}},()=>{});
+  }catch(e){}
+}
+function liveWallet(){
+  if(unW){try{unW()}catch(e){}unW=null}
+  if(!me)return;
+  try{unW=wref().onSnapshot(s=>{try{const d=s.exists?s.data():{},c=d.credits||0;if(c!==credits){credits=c;const e=$(".cr");if(e)e.textContent=c+" เครดิต"}}catch(e){}},()=>{})}catch(e){}
+}
+
+const roBar=()=>ro?`<div class="c mu">บัญชีนี้ดูข้อมูลได้อย่างเดียว สมัคร/ซื้อ/เติมเงินไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ</div>`:"";
+function head(){return `<header><div class="lg" onclick="home()">${site.logo?`<img src="${site.logo}">`:""}<span>${esc(site.name||"ร้านเครดิต")}</span></div><div class="hr">${me?`<span class="cr">${credits} เครดิต</span>`:""}<button class="ib" onclick="theme()" aria-label="ธีม">◐</button>${me?`<button class="ib" onclick="logout()">ออก</button>`:`<button class="b sm" onclick="goAuth('in')">เข้าสู่ระบบ</button>`}</div></header>`+roBar()}
 const home=()=>{showAuth=false;pend=null;tab="shop";render()};
 const goAuth=m=>{authMode=m;showAuth=true;note="";render()};
 function render(){applyTheme(site);
@@ -114,7 +132,7 @@ async function copyMsg(){
   const b=$("#cp");let ok=false;
   try{await navigator.clipboard.writeText(lastMsg);ok=true}catch(e){
     try{const t=document.createElement("textarea");t.value=lastMsg;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();ok=document.execCommand("copy");t.remove()}catch(e2){}}
-  b.textContent=ok?"คัดลอกแล้ว ✓":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง";say(ok?"คัดลอกข้อความแล้ว":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง",ok);
+  if(b)b.textContent=ok?"คัดลอกแล้ว ✓":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง";say(ok?"คัดลอกข้อความแล้ว":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง",ok);
 }
 const closeM=()=>$("#mo").innerHTML="";
 async function auth(){
@@ -133,18 +151,20 @@ async function auth(){
       if(hash!=d.hash)return say("รหัสผ่านไม่ถูกต้อง");
       me={u,role:d.role};LS.set("sess",JSON.stringify({u,hash}));
     }
-    track(u);note="";tab="shop";showAuth=false;await load();render();if(pend){const i=pend;pend=null;detail(i)}say((authMode=="up"?"สมัครสมาชิกสำเร็จ ยินดีต้อนรับ ":"ยินดีต้อนรับ ")+u,1);
+    track(u);note="";tab="shop";showAuth=false;await load();liveWallet();render();if(pend){const i=pend;pend=null;detail(i)}say((authMode=="up"?"สมัครสมาชิกสำเร็จ ยินดีต้อนรับ ":"ยินดีต้อนรับ ")+u,1);
   }catch(e){say(ERR(e))}
 }
-function logout(){LS.set("sess","");me=null;credits=0;orders=[];tab="shop";showAuth=false;note="";render();say("ออกจากระบบแล้ว",1)}
+function logout(){LS.set("sess","");if(unW){try{unW()}catch(e){}unW=null}me=null;credits=0;orders=[];tab="shop";showAuth=false;note="";render();say("ออกจากระบบแล้ว",1)}
 async function redeem(){
   const code=$("#k").value.trim().toUpperCase();if(!code)return say("กรุณากรอกคีย์");
+  if(!/^[A-Z0-9_-]+$/.test(code))return say("รูปแบบคีย์ไม่ถูกต้อง");
   try{
     const r=db.doc("keys/"+code),s=await r.get();
     if(!s.exists)return say("ไม่พบคีย์นี้");
     if(s.data().used)return say("คีย์นี้ถูกใช้ไปแล้ว");
     await r.update({used:true,by:me.u,usedAt:Date.now()});
-    const n=credits+s.data().credits;await wref().set({credits:n});credits=n;
+    const w=await wref().get(),cur=w.exists?(w.data().credits||0):credits;
+    const n=cur+s.data().credits;await wref().set({credits:n});credits=n;
     note="";render();say("เติมเครดิต +"+s.data().credits+" สำเร็จ",1);
   }catch(e){say(ERR(e))}
 }
@@ -221,7 +241,7 @@ function readTheme(){
 function preview(){applyTheme({...site,...readTheme()});document.querySelectorAll("input[type=range]").forEach(r=>{const b=$("#"+r.id+"v");if(b)b.textContent=r.value})}
 const previewSplash=()=>splash({...site,...readTheme(),spOn:true});
 async function resetTheme(){if(!await ask("รีเซ็ตสีและธีมทั้งหมดเป็นค่าเริ่มต้น?"))return;
-  try{await db.doc("settings/site").set({name:site.name||"",ig:site.ig||"",line:site.line||"",logo:site.logo||""});await load();render();say("รีเซ็ตแล้ว",1)}catch(e){say(ERR(e))}}
+  try{await db.doc("settings/site").set({name:site.name||"",ig:site.ig||"",line:site.line||"",logo:site.logo||"",pay:site.pay||"",qr:site.qr||"",rate:site.rate||1,min:site.min||0});await load();render();say("รีเซ็ตแล้ว",1)}catch(e){say(ERR(e))}}
 
 const fd=t=>new Date(t).toLocaleString("th-TH");
 const SN={approved:"อนุมัติ",rejected:"ไม่อนุมัติ",pending:"รอตรวจสอบ"};
@@ -235,7 +255,7 @@ async function sendTopup(){
   const a=+$("#ta").value,f=$("#ts").files[0],mn=site.min||0;
   if(!(a>0))return say("กรอกจำนวนเงิน");if(a<mn)return say("ขั้นต่ำ "+mn+" บาท");if(!f)return say("กรุณาแนบสลิปโอนเงิน");
   const b=$("#tb");b.disabled=true;
-  try{let img=await pic(f,700);if(img.length>230000)img=await pic(f,480);
+  try{let img=await pic(f,700);if(img.length>200000)img=await pic(f,480);if(img.length>200000)img=await pic(f,320);
     const id="t"+Date.now()+Math.random().toString(36).slice(2,5);
     await db.doc("slips/"+id).set({img});
     await db.doc("topups/"+id).set({u:me.u,amount:a,credits:Math.floor(a*(site.rate||1)),status:"pending",at:Date.now()});
@@ -282,7 +302,7 @@ async function saveSite(){
   try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
   const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
   const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
-  await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว",1)}catch(e){say(ERR(e))}
+  await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว ทุกคนจะเห็นการเปลี่ยนแปลง",1)}catch(e){say(ERR(e))}
 }
 async function genKeys(){
   const a=+$("#ka").value,n=Math.min(+$("#kn").value,50),out=[];
@@ -296,14 +316,16 @@ async function addProd(){
   if(!name||!(price>0))return say("กรอกชื่อและราคา");
   try{const f=$("#pf").files[0],img=f?await pic(f,560):"";
   await db.collection("products").add({name,desc:$("#pd").value,price,message:$("#pm").value||"ขอบคุณที่ซื้อสินค้า",img});
-  await load();render();say("เพิ่มสินค้าแล้ว",1)}catch(e){say(ERR(e))}
+  await load();render();say("เพิ่มสินค้าแล้ว ทุกคนจะเห็นทันที",1)}catch(e){say(ERR(e))}
 }
 async function delProd(id){if(!await ask("ลบสินค้านี้?"))return;try{await db.doc("products/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
 
+/* ฐานข้อมูลสำรอง (เฉพาะกรณีเปิดนอก claude.ai) เก็บในเครื่องเท่านั้น */
 function mkDb(){
-  const K="shopdb",rd=()=>{try{return JSON.parse(localStorage.getItem(K)||"{}")}catch(e){return{}}},wr=o=>localStorage.setItem(K,JSON.stringify(o));
+  const K="shopdb";let M={};
+  const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M},wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
   const o=rd();
-  if(!o["accounts/admin"])o["accounts/admin"]={hash:"e3980421a17869fc6c1adeac77c69a94bd70f57ddb9dbd33bdbee65b4cf0f0da",role:"admin",salt:"k7m2q9xa"};
+  if(!o["accounts/admin"])o["accounts/admin"]=ADMIN;
   if(!o["settings/site"])o["settings/site"]={name:"ร้านเครดิต",ig:"",line:"",logo:""};
   wr(o);
   const snap=(p,d)=>({id:p.split("/").pop(),exists:!!d,data:()=>d});
@@ -323,11 +345,23 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
+const ADMIN={hash:"e3980421a17869fc6c1adeac77c69a94bd70f57ddb9dbd33bdbee65b4cf0f0da",role:"admin",salt:"k7m2q9xa"};
+const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
 (async()=>{
   try{
-    db=mkDb();
-    const s=await db.doc("settings/site").get();
+    const real=await useCap("db");
+    try{const us=await useCap("user");if(us&&real){const w=await us.can("data.write");if(w===false)ro=true}}catch(e){}
+    db=real||mkDb();
+    if(real){
+      try{
+        const a=await db.doc("accounts/admin").get();
+        if(!a.exists&&!ro)await db.doc("accounts/admin").set(ADMIN);
+        const st=await db.doc("settings/site").get();
+        if(!st.exists&&!ro)await db.doc("settings/site").set({name:"ร้านเครดิต",ig:"",line:"",logo:""});
+      }catch(e){console.error(e)}
+    }
+    let s;try{s=await db.doc("settings/site").get()}catch(e){s={exists:false}}
     site=s.exists?s.data():{};
     applyTheme(site);
     splash(site);
@@ -338,7 +372,9 @@ function mkDb(){
         if(a.exists&&a.data().hash==ss.hash){me={u:ss.u,role:a.data().role};await load()}
       }
     }catch(e){console.error(e)}
+    if(!me)await load();
     render();
+    if(real){live();liveWallet()}
   }catch(e){
     console.error(e);
     $("#app").innerHTML=`<div class="c er">โหลดไม่สำเร็จ: ${esc(e.message||e.code)}</div>`;
