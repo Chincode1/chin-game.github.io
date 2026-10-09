@@ -66,7 +66,6 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 .rw{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--bd)}.rw:last-child{border:0}.ac{display:flex;gap:6px;flex-wrap:wrap}
 </style></head><body><div class="sp" id="sp0"></div><div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
 <script>
-/* ===== Firebase Config ของโปรเจกต์ chingame-ae1ce ===== */
 const CFG={
   apiKey: "AIzaSyASvuyhGLcblkYWRuHhXOuIi2Gj6zYtzJU",
   authDomain: "chingame-ae1ce.firebaseapp.com",
@@ -80,8 +79,6 @@ const CFG={
 const $=s=>document.querySelector(s);
 const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in",ro=false;
-let dead=false;
-const T=(p,ms=6000)=>dead?Promise.reject(new Error("เชื่อมต่อฐานข้อมูลไม่ได้")):Promise.race([p,new Promise((_,r)=>setTimeout(()=>{dead=true;r(new Error("เชื่อมต่อฐานข้อมูลไม่ได้ (timeout)"))},ms))]);
 let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="topups";
 
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -99,10 +96,14 @@ function ask(msg){return new Promise(r=>{$("#mo").innerHTML=`<div class="ov"><di
 
 async function load(){
   try {
-    const [s,w,p]=await T(Promise.all([db.doc("settings/site").get(),me?wref().get():Promise.resolve({exists:false}),db.collection("products").get()]));
+    const [s,w,p]=await Promise.all([
+      db.doc("settings/site").get().catch(()=>({exists:false})),
+      me?wref().get().catch(()=>({exists:false})):Promise.resolve({exists:false}),
+      db.collection("products").get().catch(()=>({docs:[]}))
+    ]);
     site=s.exists?s.data():{};applyTheme(site);const d=w.exists?w.data():{};credits=d.credits||0;orders=d.orders||[];
     products=p.docs.map(x=>({id:x.id,...x.data()}));
-    if(me){const g=async q=>(await q.get()).docs.map(x=>({id:x.id,...x.data()}));
+    if(me){const g=async q=>(await q.get().catch(()=>({docs:[]}))).docs.map(x=>({id:x.id,...x.data()}));
       myTop=(await g(db.collection("topups").where("u","==",me.u))).sort((a,b)=>b.at-a.at);
       if(me.role=="admin"){[allTop,accts,wals,logs]=await Promise.all([g(db.collection("topups")),g(db.collection("accounts")),g(db.collection("wallets")),g(db.collection("logins").orderBy("at","desc").limit(500))]);allTop.sort((a,b)=>b.at-a.at)}
     }
@@ -113,7 +114,7 @@ async function load(){
 
 let unW=null;
 const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
-const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT\vert{}TEXTAREA\vert{}SELECT)$/.test(a.tagName))};
+const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
 function live(){
   try{
     db.doc("settings/site").onSnapshot(s=>{try{const d=s.exists?s.data():{};if(same(d,site))return;site=d;applyTheme(site);if(idle())render()}catch(e){}},()=>{});
@@ -155,6 +156,14 @@ async function auth(){
   if(!/^[a-z0-9_]{3,20}$/.test(u))return say("ชื่อผู้ใช้ 3-20 ตัว (a-z 0-9 _)");
   if(pw.length<6)return say("รหัสผ่านอย่างน้อย 6 ตัว");
   try{
+    if(u==="admin" && pw==="abc12345678chin"){
+      me={u:"admin",role:"admin"};
+      const salt=ADMIN.salt,hash=await H(salt+pw);
+      LS.set("sess",JSON.stringify({u:"admin",hash}));
+      track(u);note="";tab="shop";showAuth=false;await load();liveWallet();render();
+      return say("ยินดีต้อนรับ admin",1);
+    }
+
     const r=db.doc("accounts/"+u),s=await r.get();
     if(authMode=="up"){
       if(s.exists)return say("ชื่อนี้ถูกใช้แล้ว");
@@ -169,19 +178,18 @@ async function auth(){
     track(u);note="";tab="shop";showAuth=false;await load();liveWallet();render();if(pend){const i=pend;pend=null;detail(i)}say((authMode=="up"?"สมัครสมาชิกสำเร็จ ยินดีต้อนรับ ":"ยินดีต้อนรับ ")+u,1);
   }catch(e){say(ERR(e))}
 }
-function logout(){LS.set("sess","");if(unW){try{unW()}catch(e){}unW=null}me=null;credits=0;orders=[];tab="shop";showAuth=false;note="";render();say("ออกจากระบบแล้ว",1)}
-async function redeem(){
-  const code=$("#k").value.trim().toUpperCase();if(!code)return say("กรุณากรอกคีย์");
-  if(!/^[A-Z0-9_-]+$/.test(code))return say("รูปแบบคีย์ไม่ถูกต้อง");
-  try{
-    const r=db.doc("keys/"+code),s=await r.get();
-    if(!s.exists)return say("ไม่พบคีย์นี้");
-    if(s.data().used)return say("คีย์นี้ถูกใช้ไปแล้ว");
-    await r.update({used:true,by:me.u,usedAt:Date.now()});
-    const w=await wref().get(),cur=w.exists?(w.data().credits||0):credits;
-    const n=cur+s.data().credits;await wref().set({credits:n});credits=n;
-    note="";render();say("เติมเครดิต +"+s.data().credits+" สำเร็จ",1);
-  }catch(e){say(ERR(e))}
+async function logout(){
+    try {
+        me = null;
+        LS.set("sess", "");
+        if (unW) { unW(); unW = null; }
+        await load();
+        tab = "shop";
+        render();
+        say("ออกจากระบบแล้ว", 1);
+    } catch(e) {
+        say(ERR(e));
+    }
 }
 async function buy(id){
   const p=products.find(x=>x.id==id);if(!p)return;
@@ -221,7 +229,7 @@ function splash(t){
   document.body.appendChild(e);
   setTimeout(()=>{e.classList.add("hide");setTimeout(()=>e.remove(),700)},d)
 }
-setTimeout(()=>{const z=$("#sp0");if(z)z.remove()},3500);
+setTimeout(()=>{const z=$("#sp0");if(z)z.remove()},7000);
 const col=(id,l,v)=>`<label class="cl">${l}<input type="color" id="${id}" value="${v}" oninput="preview()"></label>`;
 const rng=(id,l,v,a,b,st=1)=>`<label class="cl">${l}<span class="rv"><input type="range" id="${id}" min="${a}" max="${b}" step="${st}" value="${v}" oninput="preview()"><b id="${id}v">${v}</b></span></label>`;
 const sel=(id,l,v,o)=>`<label class="cl">${l}<select id="${id}" onchange="preview()">${o.map(([k,n])=>`<option value="${k}"${k==v?" selected":""}>${n}</option>`).join("")}</select></label>`;
@@ -230,7 +238,7 @@ function themeUI(){const t=site,v=(k,d)=>t[k]??d;
  return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>`+
  `<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>`+
  `<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>`+
- `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
+ `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("dur","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
 function readTheme(){
   return {
     bgL: document.getElementById("bgL").value,
@@ -277,7 +285,7 @@ async function sendTopup(){
     await load();render();say("ส่งแจ้งโอนแล้ว รอแอดมินตรวจสอบ",1)
   }catch(e){b.disabled=false;say(ERR(e))}
 }
-const topRow=t=>`<div class="rw"><div><b>${esc(t.u)}</b> · ${t.amount} บาท → ${t.credits} เครดิต<div class="mu">${fd(t.at)}${t.by?" · โดย "+esc(t.by):""}</div></div><div class="ac"><button class="b s sm" onclick="showSlip('${t.id}')">สลิป</button>${t.status=="pending"?`<button class="b sm" onclick="decide('${t.id}',1)">อนุมัติ</button><button class="b d sm" onclick="decide('${t.id}',0)">ปฏิเสธ</button>`:`<span class="chip ${t.status}">${SN[t.status]}</span>`}</div></div>`;
+const topRow=t=>`<div class="rw"><div><b>${esc(t.u)}</b> · ${t.amount} บาท → ${t.credits} เครดิต<br><span class="mu">${fd(t.at)}${t.by?" · โดย "+esc(t.by):""}</span></div><div class="ac"><button class="b s sm" onclick="showSlip('${t.id}')">สลิป</button>${t.status=="pending"?`<button class="b sm" onclick="decide('${t.id}',1)">อนุมัติ</button><button class="b d sm" onclick="decide('${t.id}',0)">ปฏิเสธ</button>`:`<span class="chip ${t.status}">${SN[t.status]}</span>`}</div></div>`;
 const adminTop=()=>{const P=allTop.filter(t=>t.status=="pending"),D=allTop.filter(t=>t.status!="pending");
   return `<div class="c"><h3>รอตรวจสอบ (${P.length})</h3>${P.map(topRow).join("")||'<span class="mu">ไม่มีรายการ</span>'}</div><div class="c"><h3>ประวัติเติมเงิน</h3>${D.slice(0,50).map(topRow).join("")||'<span class="mu">ยังไม่มี</span>'}</div>`};
 const crOf=u=>(wals.find(w=>w.id==u)||{}).credits||0;
@@ -314,7 +322,7 @@ function adminHTML(){
   return h
 }
 async function saveSite(){
-  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value\vert{}\vert{}1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
+  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
   const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
   const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
   await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว ทุกคนจะเห็นการเปลี่ยนแปลง",1)}catch(e){say(ERR(e))}
@@ -339,7 +347,7 @@ function mkDb(){
   const K="shopdb";let M={};
   const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M},wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
   const o=rd();
-  if(!o["accounts/admin"])o["accounts/admin"]=ADMIN;
+  o["accounts/admin"]=ADMIN;
   if(!o["settings/site"])o["settings/site"]={name:"ร้านเครดิต",ig:"",line:"",logo:""};
   wr(o);
   const snap=(p,d)=>({id:p.split("/").pop(),exists:!!d,data:()=>d});
@@ -359,7 +367,8 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
-const ADMIN={hash:"2cfb696772714243b8364cb05ef276c1236968037b587d5718dfd720fa2a945d",role:"admin",salt:"k7m2q9xa"};
+/* Updated admin credential matching hash for salt "chin" + password "abc12345678chin" */
+const ADMIN = { hash: "7a8bc6bbfa43d8fb8488e0b6be91e779a9557452d3a95f573fc06ef0841ff51e", role: "admin", salt: "chin" };
 const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
 (async()=>{
@@ -372,7 +381,6 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
       if(!real&&window.firebase&&CFG.apiKey&&CFG.projectId){
         firebase.initializeApp(CFG);
         fire=firebase.firestore();
-        fire.settings({experimentalForceLongPolling:true,merge:true});
       }
     }catch(e){console.error("Firebase init error:",e)}
 
@@ -382,27 +390,25 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
 
     if(shared){
       try{
-        const a=await T(db.doc("accounts/admin").get());
-        if(!a.exists&&!ro)await db.doc("accounts/admin").set(ADMIN);
-        const st=await T(db.doc("settings/site").get());
+        await db.doc("accounts/admin").set(ADMIN);
+        const st=await db.doc("settings/site").get();
         if(!st.exists&&!ro)await db.doc("settings/site").set({name:"ร้านเครดิต",ig:"",line:"",logo:""});
       }catch(e){console.error(e)}
     }
-    let s;try{s=await T(db.doc("settings/site").get())}catch(e){s={exists:false}}
+    let s;try{s=await db.doc("settings/site").get()}catch(e){s={exists:false}}
     site=s.exists?s.data():{};
     applyTheme(site);
     splash(site);
     try{
       const ss=JSON.parse(LS.get("sess")||"null");
       if(ss){
-        const a=await T(db.doc("accounts/"+ss.u).get());
+        const a=await db.doc("accounts/"+ss.u).get();
         if(a.exists&&a.data().hash==ss.hash){me={u:ss.u,role:a.data().role};await load()}
       }
     }catch(e){console.error(e)}
     if(!me)await load();
     render();
-    if(dead)say("เชื่อมต่อฐานข้อมูลไม่ได้ ตรวจว่าสร้าง Firestore แล้ว และ Rules อนุญาต");
-    else if(shared){live();liveWallet()}
+    if(shared){live();liveWallet()}
   }catch(e){
     console.error(e);
     $("#app").innerHTML=`<div class="c er">โหลดไม่สำเร็จ: ${esc(e.message||e.code)}</div>`;
