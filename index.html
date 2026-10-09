@@ -63,7 +63,7 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 </style></head><body><div class="sp" id="sp0"></div><div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
 <script>
 const $=s=>document.querySelector(s);
-const esc=s=>String(s?="" ).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in";
 let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="topups";
 
@@ -74,10 +74,10 @@ const say=(m,ok)=>{let w=$("#tw");if(!w){w=document.createElement("div");w.id="t
   const x=()=>{t.classList.add("out");setTimeout(()=>t.remove(),250)};t.onclick=x;w.appendChild(t);setTimeout(x,3400)};
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
 const wref=()=>db.doc("wallets/"+me.u);
-const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีผู้เยี่ยมชมแบบดูอย่างเดียวบันทึกข้อมูลไม่ได้ กรุณาขอสิทธิ์ Contributor":(e.message||e.code))||"ผิดพลาด";
+const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีผู้เยี่ยมชมแบบดูอย่างเดียวบันทึกข้อมูลไม่ได้ กรุณาขอสิทธิ์ Contributor":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
 function theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";LS.set("th",r.dataset.theme)}
 if(LS.get("th"))document.documentElement.dataset.theme=LS.get("th");
-function pic(file,max){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL(/png$/.test(file.type)&&max<300?"image/png":"image/jpeg",.75))};i.onerror=no;i.src=URL.createObjectURL(file)})}
+function pic(file,max){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=()=>no(new Error("อ่านไฟล์รูปไม่ได้"));fr.onload=()=>{const i=new Image();i.onload=()=>{try{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL(/png$/.test(file.type)&&max<300?"image/png":"image/jpeg",.75))}catch(e){no(e)}};i.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองใช้ไฟล์ JPG/PNG"));i.src=fr.result};fr.readAsDataURL(file)})}
 function ask(msg){return new Promise(r=>{$("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd"><p>${esc(msg)}</p><div class="r"><button class="b s" id="n">ยกเลิก</button><button class="b d" id="y">ยืนยัน</button></div></div></div></div>`;$("#y").onclick=()=>{$("#mo").innerHTML="";r(1)};$("#n").onclick=()=>{$("#mo").innerHTML="";r(0)}})}
 
 async function load(){
@@ -196,7 +196,28 @@ function themeUI(){const t=site,v=(k,d)=>t[k]??d;
  <div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>
  <div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>
  <div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
-function readTheme(){const g=i=>$("#"+i);return{bgL:g("bgL").value,txL:g("txL").value,acL:g("acL").value,bgD:g("bgD").value,txD:g("txD").value,acD:g("acD").value,font:g("fo").value,fsize:+g("fs").value,radius:+g("rad").value,tile:+g("tl").value,ratio:g("ra").value,spOn:g("spOn").checked,tag:g("tg").value.trim(),sty:g("sy").value,dur:+g("du").value,spC:g("spC").checked,sbg:g("sbg").value,stx:g("stx").value}}
+function readTheme(){
+  return {
+    bgL: document.getElementById("bgL").value,
+    txL: document.getElementById("txL").value,
+    acL: document.getElementById("acL").value,
+    bgD: document.getElementById("bgD").value,
+    txD: document.getElementById("txD").value,
+    acD: document.getElementById("acD").value,
+    font: document.getElementById("fo").value,
+    fsize: +document.getElementById("fs").value,
+    radius: +document.getElementById("rad").value,
+    tile: +document.getElementById("tl").value,
+    ratio: document.getElementById("ra").value,
+    spOn: document.getElementById("spOn").checked,
+    tag: document.getElementById("tg").value.trim(),
+    sty: document.getElementById("sy").value,
+    dur: +document.getElementById("du").value,
+    spC: document.getElementById("spC").checked,
+    sbg: document.getElementById("sbg").value,
+    stx: document.getElementById("stx").value
+  };
+}
 function preview(){applyTheme({...site,...readTheme()});document.querySelectorAll("input[type=range]").forEach(r=>{const b=$("#"+r.id+"v");if(b)b.textContent=r.value})}
 const previewSplash=()=>splash({...site,...readTheme(),spOn:true});
 async function resetTheme(){if(!await ask("รีเซ็ตสีและธีมทั้งหมดเป็นค่าเริ่มต้น?"))return;
@@ -258,7 +279,7 @@ function adminHTML(){
   return h
 }
 async function saveSite(){
-  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value\vert{}\vert{}1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
+  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
   const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
   const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
   await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว",1)}catch(e){say(ERR(e))}
