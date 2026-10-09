@@ -80,6 +80,8 @@ const CFG={
 const $=s=>document.querySelector(s);
 const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in",ro=false;
+let dead=false;
+const T=(p,ms=6000)=>dead?Promise.reject(new Error("เชื่อมต่อฐานข้อมูลไม่ได้")):Promise.race([p,new Promise((_,r)=>setTimeout(()=>{dead=true;r(new Error("เชื่อมต่อฐานข้อมูลไม่ได้ (timeout)"))},ms))]);
 let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="topups";
 
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
@@ -97,7 +99,7 @@ function ask(msg){return new Promise(r=>{$("#mo").innerHTML=`<div class="ov"><di
 
 async function load(){
   try {
-    const [s,w,p]=await Promise.all([db.doc("settings/site").get(),me?wref().get():Promise.resolve({exists:false}),db.collection("products").get()]);
+    const [s,w,p]=await T(Promise.all([db.doc("settings/site").get(),me?wref().get():Promise.resolve({exists:false}),db.collection("products").get()]));
     site=s.exists?s.data():{};applyTheme(site);const d=w.exists?w.data():{};credits=d.credits||0;orders=d.orders||[];
     products=p.docs.map(x=>({id:x.id,...x.data()}));
     if(me){const g=async q=>(await q.get()).docs.map(x=>({id:x.id,...x.data()}));
@@ -111,7 +113,7 @@ async function load(){
 
 let unW=null;
 const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
-const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT\vert{}TEXTAREA\vert{}SELECT)$/.test(a.tagName))};
+const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
 function live(){
   try{
     db.doc("settings/site").onSnapshot(s=>{try{const d=s.exists?s.data():{};if(same(d,site))return;site=d;applyTheme(site);if(idle())render()}catch(e){}},()=>{});
@@ -219,7 +221,7 @@ function splash(t){
   document.body.appendChild(e);
   setTimeout(()=>{e.classList.add("hide");setTimeout(()=>e.remove(),700)},d)
 }
-setTimeout(()=>{const z=$("#sp0");if(z)z.remove()},7000);
+setTimeout(()=>{const z=$("#sp0");if(z)z.remove()},3500);
 const col=(id,l,v)=>`<label class="cl">${l}<input type="color" id="${id}" value="${v}" oninput="preview()"></label>`;
 const rng=(id,l,v,a,b,st=1)=>`<label class="cl">${l}<span class="rv"><input type="range" id="${id}" min="${a}" max="${b}" step="${st}" value="${v}" oninput="preview()"><b id="${id}v">${v}</b></span></label>`;
 const sel=(id,l,v,o)=>`<label class="cl">${l}<select id="${id}" onchange="preview()">${o.map(([k,n])=>`<option value="${k}"${k==v?" selected":""}>${n}</option>`).join("")}</select></label>`;
@@ -228,7 +230,7 @@ function themeUI(){const t=site,v=(k,d)=>t[k]??d;
  return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>`+
  `<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>`+
  `<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>`+
- `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("dur","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
+ `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
 function readTheme(){
   return {
     bgL: document.getElementById("bgL").value,
@@ -312,7 +314,7 @@ function adminHTML(){
   return h
 }
 async function saveSite(){
-  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value\vert{}\vert{}1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
+  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
   const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
   const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
   await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว ทุกคนจะเห็นการเปลี่ยนแปลง",1)}catch(e){say(ERR(e))}
@@ -357,7 +359,7 @@ function mkDb(){
     collection:c=>Q(c)
   }
 }
-const ADMIN={hash:"1937db547847c94592a3449c256038166b1e6005b63bc3a6c528f3bb108259db",role:"admin",salt:"secure_secure"};
+const ADMIN={hash:"e3980421a17869fc6c1adeac77c69a94bd70f57ddb9dbd33bdbee65b4cf0f0da",role:"admin",salt:"k7m2q9xa"};
 const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
 
 (async()=>{
@@ -370,6 +372,7 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
       if(!real&&window.firebase&&CFG.apiKey&&CFG.projectId){
         firebase.initializeApp(CFG);
         fire=firebase.firestore();
+        fire.settings({experimentalForceLongPolling:true,merge:true});
       }
     }catch(e){console.error("Firebase init error:",e)}
 
@@ -379,26 +382,27 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
 
     if(shared){
       try{
-        const a=await db.doc("accounts/admin").get();
+        const a=await T(db.doc("accounts/admin").get());
         if(!a.exists&&!ro)await db.doc("accounts/admin").set(ADMIN);
-        const st=await db.doc("settings/site").get();
+        const st=await T(db.doc("settings/site").get());
         if(!st.exists&&!ro)await db.doc("settings/site").set({name:"ร้านเครดิต",ig:"",line:"",logo:""});
       }catch(e){console.error(e)}
     }
-    let s;try{s=await db.doc("settings/site").get()}catch(e){s={exists:false}}
+    let s;try{s=await T(db.doc("settings/site").get())}catch(e){s={exists:false}}
     site=s.exists?s.data():{};
     applyTheme(site);
     splash(site);
     try{
       const ss=JSON.parse(LS.get("sess")||"null");
       if(ss){
-        const a=await db.doc("accounts/"+ss.u).get();
+        const a=await T(db.doc("accounts/"+ss.u).get());
         if(a.exists&&a.data().hash==ss.hash){me={u:ss.u,role:a.data().role};await load()}
       }
     }catch(e){console.error(e)}
     if(!me)await load();
     render();
-    if(shared){live();liveWallet()}
+    if(dead)say("เชื่อมต่อฐานข้อมูลไม่ได้ ตรวจว่าสร้าง Firestore แล้ว และ Rules อนุญาต");
+    else if(shared){live();liveWallet()}
   }catch(e){
     console.error(e);
     $("#app").innerHTML=`<div class="c er">โหลดไม่สำเร็จ: ${esc(e.message||e.code)}</div>`;
