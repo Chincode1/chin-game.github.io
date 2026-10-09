@@ -66,14 +66,14 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 .rw{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--bd)}.rw:last-child{border:0}.ac{display:flex;gap:6px;flex-wrap:wrap}
 </style></head><body><div class="sp" id="sp0"></div><div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
 <script>
-/* ===== วาง firebaseConfig ของคุณตรงนี้ (จาก Firebase Console > Project settings > Your apps) ===== */
+/* ===== Firebase Config ของโปรเจกต์ chingame-ae1ce ===== */
 const CFG={
-  apiKey:"",
-  authDomain:"",
-  projectId:"",
-  storageBucket:"",
-  messagingSenderId:"",
-  appId:""
+  apiKey: "AIzaSyASvuyhGLcblkYWRuHhXOuIi2Gj6zYtzJU",
+  authDomain: "chingame-ae1ce.firebaseapp.com",
+  projectId: "chingame-ae1ce",
+  storageBucket: "chingame-ae1ce.firebasestorage.app",
+  messagingSenderId: "691058862335",
+  appId: "1:691058862335:web:4f4597ec07c7a7245bc4ca"
 };
 /* ================================================================================================ */
 
@@ -109,7 +109,6 @@ async function load(){
   }
 }
 
-/* ---- อัปเดตสดให้ทุกคนที่เปิดเว็บอยู่ ---- */
 let unW=null;
 const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
 const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
@@ -211,8 +210,8 @@ function applyTheme(t){
   el.textContent=css.join("")
 }
 function splash(t){
-  if(!t||t.spOn===false)return;
   const old=$("#sp0");if(old)old.remove();
+  if(!t||t.spOn===false)return;
   const d=(t.dur||2)*1000,e=document.createElement("div");
   e.className="sp "+(t.sty||"zoom");
   if(t.spC&&HX.test(t.sbg)&&HX.test(t.stx))e.style.cssText=`background:${t.sbg};color:${t.stx}`;
@@ -226,10 +225,10 @@ const rng=(id,l,v,a,b,st=1)=>`<label class="cl">${l}<span class="rv"><input type
 const sel=(id,l,v,o)=>`<label class="cl">${l}<select id="${id}" onchange="preview()">${o.map(([k,n])=>`<option value="${k}"${k==v?" selected":""}>${n}</option>`).join("")}</select></label>`;
 const chk=(id,l,on)=>`<label class="cl">${l}<input type="checkbox" id="${id}" style="width:20px;height:20px;margin:0" ${on?"checked":""} onchange="preview()"></label>`;
 function themeUI(){const t=site,v=(k,d)=>t[k]??d;
- return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>
- <div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>
- <div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>
- <div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
+ return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>`+
+ `<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>`+
+ `<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>`+
+ `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
 function readTheme(){
   return {
     bgL: document.getElementById("bgL").value,
@@ -301,9 +300,9 @@ async function decide(id,ok){
 }
 const siteCard=()=>`<div class="c"><h3>ตั้งค่าร้าน</h3><input id="sn" placeholder="ชื่อร้าน" value="${esc(site.name)}"><input id="si" placeholder="Instagram (ชื่อผู้ใช้)" value="${esc(site.ig)}"><input id="sl" placeholder="LINE ID" value="${esc(site.line)}"><div class="mu">โลโก้</div><input id="sf" type="file" accept="image/*"><button class="b" onclick="saveSite()">บันทึก</button></div>`;
 const payCard=()=>`<div class="c"><h3>การชำระเงิน (เติมเงิน)</h3><textarea id="pay" rows="3" placeholder="ข้อมูลรับเงิน เช่น พร้อมเพย์ 08x-xxx-xxxx ชื่อบัญชี ...">${esc(site.pay)}</textarea><div class="mu">QR รับเงิน</div><input id="qrf" type="file" accept="image/*">${site.qr?`<img src="${site.qr}" style="max-width:120px;border-radius:8px;border:1px solid var(--bd);margin:6px 0">`:""}<div class="mu">เครดิตที่ได้ต่อ 1 บาท</div><input id="rate" type="number" step="0.1" min="0.1" value="${site.rate||1}"><div class="mu">ขั้นต่ำ (บาท)</div><input id="mn" type="number" min="0" value="${site.min||0}"><button class="b" onclick="saveSite()">บันทึก</button></div>`;
-const storeCards=()=>`<div class="c"><h3>สร้างคีย์เครดิต</h3><input id="ka" type="number" value="10" placeholder="เครดิตต่อคีย์"><input id="kn" type="number" value="5" placeholder="จำนวนคีย์"><button class="b" onclick="genKeys()">สร้างคีย์</button><div class="msg" id="kout" style="display:none"></div></div>
-<div class="c"><h3>เพิ่มสินค้า</h3><input id="pn" placeholder="ชื่อสินค้า"><textarea id="pd" rows="3" placeholder="รายละเอียดสินค้า"></textarea><input id="pp" type="number" value="1" placeholder="ราคา (เครดิต)"><textarea id="pm" rows="2" placeholder="ข้อความที่ลูกค้าได้หลังซื้อ"></textarea><div class="mu">รูปสินค้า</div><input id="pf" type="file" accept="image/*"><button class="b" onclick="addProd()">เพิ่มสินค้า</button></div>
-<div class="c"><h3>สินค้าทั้งหมด</h3>${products.map(p=>`<div class="rw"><span>${esc(p.name)} ·${p.price}</span><button class="b d sm" onclick="delProd('${p.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+const storeCards=()=>`<div class="c"><h3>สร้างคีย์เครดิต</h3><input id="ka" type="number" value="10" placeholder="เครดิตต่อคีย์"><input id="kn" type="number" value="5" placeholder="จำนวนคีย์"><button class="b" onclick="genKeys()">สร้างคีย์</button><div class="msg" id="kout" style="display:none"></div></div>`+
+`<div class="c"><h3>เพิ่มสินค้า</h3><input id="pn" placeholder="ชื่อสินค้า"><textarea id="pd" rows="3" placeholder="รายละเอียดสินค้า"></textarea><input id="pp" type="number" value="1" placeholder="ราคา (เครดิต)"><textarea id="pm" rows="2" placeholder="ข้อความที่ลูกค้าได้หลังซื้อ"></textarea><div class="mu">รูปสินค้า</div><input id="pf" type="file" accept="image/*"><button class="b" onclick="addProd()">เพิ่มสินค้า</button></div>`+
+`<div class="c"><h3>สินค้าทั้งหมด</h3>${products.map(p=>`<div class="rw"><span>${esc(p.name)} ·${p.price}</span><button class="b d sm" onclick="delProd('${p.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
 function adminHTML(){
   const pc=allTop.filter(t=>t.status=="pending").length;
   const subs=[["topups","เติมเงิน"+(pc?" ("+pc+")":"")],["users","สมาชิก"],["settings","ตั้งค่าร้าน"],["store","สินค้า & คีย์"]];
@@ -334,7 +333,6 @@ async function addProd(){
 }
 async function delProd(id){if(!await ask("ลบสินค้านี้?"))return;try{await db.doc("products/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
 
-/* ฐานข้อมูลสำรอง (ใช้เมื่อยังไม่ได้ใส่ firebaseConfig) เก็บในเครื่องเท่านั้น */
 function mkDb(){
   const K="shopdb";let M={};
   const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M},wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
@@ -367,7 +365,6 @@ const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window
     const real=await useCap("db");
     try{const us=await useCap("user");if(us&&real){const w=await us.can("data.write");if(w===false)ro=true}}catch(e){}
 
-    /* Firebase: ใช้เมื่อเปิดนอก claude.ai และใส่ config แล้ว */
     let fire=null;
     try{
       if(!real&&window.firebase&&CFG.apiKey&&CFG.projectId){
