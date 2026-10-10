@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ร้านเครดิต</title>
+<title>Chincode</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#fff;--tx:#111;--mu:#8a8a8a;--bd:#ececec;--ac:#111;--ac2:#fff;--ok:#16a34a;--er:#d92d20;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e0e;--tx:#f1f1f1;--mu:#8c8c8c;--bd:#242424;--ac:#f1f1f1;--ac2:#0e0e0e}}
 :root[data-theme="dark"]{--bg:#0e0e0e;--tx:#f1f1f1;--mu:#8c8c8c;--bd:#242424;--ac:#f1f1f1;--ac2:#0e0e0e}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Thai",system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Thai",system-ui,sans-serif;font-size:15px;line-height:1.6}
 a{color:var(--tx)}.w{max-width:880px;margin:0 auto;padding:0 20px 48px}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 0;margin-bottom:28px;border-bottom:1px solid var(--bd)}
 .lg{font-weight:500;font-size:17px;letter-spacing:.02em;display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0}
 .lg img{height:28px;max-width:110px;object-fit:contain}.hr{display:flex;align-items:center;gap:8px}
 .cr{font-size:13px;color:var(--mu);margin-right:4px;white-space:nowrap}
-.ib{background:none;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:7px 11px;cursor:pointer;font:inherit;font-size:13px}
 nav{display:flex;gap:22px;margin-bottom:28px;border-bottom:1px solid var(--bd);overflow-x:auto}
 nav button{background:none;border:0;border-bottom:1.5px solid transparent;padding:0 0 12px;color:var(--mu);font:inherit;cursor:pointer;white-space:nowrap;margin-bottom:-1px}
 nav button.on{color:var(--tx);border-color:var(--tx)}
@@ -24,16 +24,15 @@ nav button.on{color:var(--tx);border-color:var(--tx)}
 .mu{color:var(--mu);font-size:14px}.r{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:24px 16px}
 .p{cursor:pointer}.p .im{aspect-ratio:1;background:var(--bd);border-radius:10px;overflow:hidden}
-.p img,.big{width:100%;height:100%;object-fit:cover;display:block}.p img{transition:opacity .2s}.p:hover img{opacity:.88}
+.p img,.big{width:100%;height:100%;object-fit:cover;display:block}.p:hover img{opacity:.88}
 .p .t{padding:10px 2px 0}.p b{display:block;font-weight:500;font-size:14px}
 input,textarea{width:100%;padding:11px 0;border:0;border-bottom:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;margin:4px 0 10px;outline:0;border-radius:0}
-input:focus,textarea:focus{border-color:var(--tx)}input[type=file]{font-size:13px;color:var(--mu);border:0}
+input:focus,textarea:focus{border-color:var(--tx)}input[type=file]{font-size:13px;color:var(--mu)}
 .b{padding:11px 22px;border:1px solid var(--ac);border-radius:8px;background:var(--ac);color:var(--ac2);font:inherit;font-size:14px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
 .b.s{background:transparent;color:var(--tx);border-color:var(--bd)}.b.d{background:var(--er);border-color:var(--er);color:#fff}.b.sm{padding:7px 14px;font-size:13px}.b:disabled{opacity:.4}
 .msg{margin-top:10px;padding:12px;border-radius:8px;background:var(--bd);white-space:pre-wrap;word-break:break-word;font-size:14px}
-#t{display:none}
-#tw{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);width:min(92vw,380px);display:flex;flex-direction:column;gap:8px;z-index:20;pointer-events:none}
-.ts{pointer-events:auto;position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.14);font-size:14px;cursor:pointer;animation:tin .35s cubic-bezier(.2,.9,.3,1.2)}
+#tw{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);width:min(92vw,380px);display:flex;flex-direction:column;gap:8px;z-index:60;pointer-events:none}
+.ts{pointer-events:auto;position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.14);font-size:14px;cursor:pointer;animation:tin .35s ease}
 .ts.out{animation:tout .25s forwards}
 .ts i{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:600;color:#fff;background:var(--ok)}
 .ts.er i{background:var(--er)}
@@ -41,19 +40,19 @@ input:focus,textarea:focus{border-color:var(--tx)}input[type=file]{font-size:13p
 .ts.er u{background:var(--er)}
 @keyframes tin{from{opacity:0;transform:translateY(-16px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes tout{to{opacity:0;transform:translateY(-10px) scale(.97)}}
-@keyframes tbar{to{transform:scaleX(0)}}.ok{color:var(--ok)}.er{color:var(--er)}
+@keyframes tbar{to{transform:scaleX(0)}}
+.ok{color:var(--ok)}.er{color:var(--er)}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
 .md{background:var(--bg);border:1px solid var(--bd);border-radius:14px;max-width:420px;width:100%;max-height:90vh;overflow:auto}
 .md .bd{padding:20px}.md .big{aspect-ratio:1;height:auto}
 .au{max-width:340px;margin:40px auto}.au h2{font-weight:500;font-size:22px;margin:0 0 20px}
-
 .cl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;font-size:14px;border-bottom:1px solid var(--bd)}
 .cl input[type=color]{width:44px;height:30px;padding:0;margin:0;border:1px solid var(--bd);border-radius:6px;background:none;cursor:pointer}
 .cl input[type=range]{width:130px;margin:0;padding:0;border:0;accent-color:var(--ac)}
 .rv{display:flex;align-items:center;gap:8px}.rv b{font-weight:400;font-size:13px;min-width:30px;text-align:right;color:var(--mu)}
 select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 8px;font:inherit;font-size:13px;max-width:55%}
 .sp{position:fixed;inset:0;z-index:50;background:var(--bg);color:var(--tx);display:flex;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}.sp.hide{opacity:0;visibility:hidden}
-.si{text-align:center;padding:20px}.sp.zoom .si{animation:szoom .9s cubic-bezier(.2,.9,.3,1) both}.sp.slide .si{animation:sslide .9s ease both}.sp.fade .si{animation:sfade 1.1s ease both}
+.si{text-align:center;padding:20px}.sp.zoom .si{animation:szoom .9s ease both}.sp.slide .si{animation:sslide .9s ease both}.sp.fade .si{animation:sfade 1.1s ease both}
 .si img{max-height:90px;max-width:220px;object-fit:contain}.si .nm{font-size:28px;font-weight:500;letter-spacing:.08em}.si .tg{margin-top:10px;opacity:.6;font-size:14px;letter-spacing:.12em}
 .sb{width:120px;height:2px;margin:28px auto 0;overflow:hidden;border-radius:2px;background:color-mix(in srgb,currentColor 15%,transparent)}
 .sb u{display:block;height:100%;width:100%;background:currentColor;transform-origin:left;animation:sload linear both}
@@ -61,358 +60,1148 @@ select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-ra
 @keyframes sslide{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes sfade{from{opacity:0}to{opacity:1}}
 @keyframes sload{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-
 .chip{font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--bd);white-space:nowrap;display:inline-block}.chip.approved{color:var(--ok);border-color:var(--ok)}.chip.rejected{color:var(--er);border-color:var(--er)}.chip.pending{color:var(--mu)}
 .rw{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--bd)}.rw:last-child{border:0}.ac{display:flex;gap:6px;flex-wrap:wrap}
-</style></head><body><div class="sp" id="sp0"></div><div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
+
+.bn{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:18px}.bn a{flex:none;width:100%;scroll-snap-align:start;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--bd);color:var(--tx);text-decoration:none}.bn img{width:100%;max-height:200px;object-fit:cover;display:block}.bn span{display:block;padding:8px 12px;font-size:14px}
+.cats{display:flex;gap:14px;overflow-x:auto;margin-bottom:18px;padding-bottom:4px}.ct{flex:none;width:68px;text-align:center;cursor:pointer;font-size:12px;color:var(--mu)}.ct.on{color:var(--tx)}.ct .cm{width:60px;height:60px;border-radius:50%;overflow:hidden;background:var(--bd);margin:0 auto 4px;display:flex;align-items:center;justify-content:center;border:2px solid transparent}.ct.on .cm{border-color:var(--ac)}.ct .cm img,.ct .cm video{width:100%;height:100%;object-fit:cover}
+.nb{overflow:hidden;white-space:nowrap;border:1px solid var(--bd);border-radius:10px;padding:8px 0;margin-bottom:18px;font-size:14px}.nb span{display:inline-block;padding-left:100%;animation:mq 14s linear infinite}@keyframes mq{to{transform:translateX(-100%)}}
+.cx{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:6px 0 12px}.bu{max-width:78%;align-self:flex-start;background:var(--bd);padding:8px 12px;border-radius:12px;font-size:14px;word-break:break-word;white-space:pre-wrap}.bu.me{align-self:flex-end;background:var(--ac);color:var(--ac2)}.bu small{display:block;font-size:10px;opacity:.6}
+#bgv{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}#bgd{position:fixed;inset:0;background:#000;z-index:-1}#bgl{position:fixed;left:50%;top:50%;width:min(50vw,260px);transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+body.hv{background:transparent}.hv .w{position:relative;z-index:1;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(8px);min-height:100vh}
+#mb{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:40;border-radius:99px;padding:10px 14px;background:var(--bg)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}#fx span{position:absolute;top:-30px;animation:fall linear infinite}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.cf{position:fixed;inset:0;pointer-events:none;z-index:70;overflow:hidden}.cf i{position:absolute;top:-10px;width:8px;height:12px;animation:fall linear forwards}
+.sk{position:fixed;z-index:80;pointer-events:none;transform:translate(-50%,-50%);animation:sk .7s forwards}@keyframes sk{to{opacity:0;transform:translate(-50%,-150%) scale(1.6)}}
+/* เมนูแอดมินแบบ ☰ */
+.ov.dr{justify-content:flex-end;align-items:stretch;padding:0}
+.dw{background:var(--bg);width:min(86vw,320px);height:100%;overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px 28px;border-left:1px solid var(--bd);animation:din .25s ease}
+@keyframes din{from{transform:translateX(100%)}to{transform:none}}
+.dw h4{margin:22px 0 4px;font-size:12px;font-weight:500;color:var(--mu);letter-spacing:.06em}
+.mi{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--bd);padding:11px 0;color:var(--mu);font:inherit;font-size:14px;cursor:pointer;text-align:left}
+.mi.on{color:var(--tx);font-weight:500}
+.mu s{opacity:.7}
+#mb{bottom:calc(env(safe-area-inset-bottom,0px) + 86px)}
+#chp{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);z-index:46;width:min(92vw,360px);background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);padding:14px;animation:tin .25s ease}
+#chp .cx{height:min(50vh,340px)}
+.chh{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-bottom:8px}
+/* ===== ดีไซน์ใหม่: ส่วนหัว / เมนูล่าง / เมนูซ้าย / ล็อกอิน ===== */
+.ov{z-index:55}
+.w{padding-bottom:120px}
+.ib{background:none;border:0;color:var(--tx);cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;position:relative;font:inherit}
+.ib svg{width:24px;height:24px}
+.ib.pf{border:1px solid var(--bd);border-radius:99px;padding:6px 14px}
+.ib .dt{position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:var(--er)}
+#bn{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--bg);border-top:1px solid var(--bd);border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.07);display:flex;align-items:flex-end;padding:8px 6px calc(env(safe-area-inset-bottom,0px) + 8px)}
+#bn button{flex:1;background:none;border:0;color:var(--mu);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:2px 0}
+#bn button.on{color:var(--ac)}
+#bn .ic{display:flex}
+#bn .mid .ic{width:56px;height:56px;border-radius:50%;background:var(--ac);color:var(--ac2);align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 6px 16px rgba(0,0,0,.25);border:4px solid var(--bg)}
+#bn .mid.on{color:var(--tx)}
+#mb{bottom:calc(env(safe-area-inset-bottom,0px) + 170px)}
+#chp{bottom:calc(env(safe-area-inset-bottom,0px) + 170px)}
+.ov.dr{justify-content:flex-start}
+.dw{padding:0;display:flex;flex-direction:column;border-left:0;border-right:1px solid var(--bd)}
+@keyframes din{from{transform:translateX(-100%)}to{transform:none}}
+.dh{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 14px;border-bottom:1px solid var(--bd)}
+.dh b{flex:1;font-size:17px;font-weight:500;color:var(--ac)}
+.dh .ib.x{border:1px solid var(--bd);border-radius:50%;width:38px;height:38px}
+.dsc{flex:1;overflow:auto;padding:4px 14px 14px}
+.dsc h4{padding-left:12px}
+.dq{padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 12px);border-top:1px solid var(--bd)}
+.di{display:flex;align-items:center;gap:14px;width:100%;background:none;border:0;border-radius:14px;padding:13px 12px;color:var(--tx);font:inherit;font-size:15px;text-align:left;cursor:pointer;margin-top:2px}
+.di.on{background:color-mix(in srgb,var(--ac) 8%,transparent);color:var(--ac)}
+.di .dic{display:flex;color:var(--mu)}.di.on .dic{color:var(--ac)}
+.di .ml{margin-left:auto}
+.atb{display:flex;border-bottom:1px solid var(--bd)}
+.atb button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:16px 8px;font:inherit;font-weight:500;color:var(--mu);cursor:pointer}
+.atb button.on{color:var(--ac);border-color:var(--ac)}
+.atb .x{flex:none;width:52px;font-size:20px}
+.fi{border:1px solid var(--bd)!important;border-radius:12px!important;padding:12px 14px!important;margin:4px 0 4px!important}
+.fl{display:block;font-weight:500;font-size:14px;margin-top:14px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--mu);cursor:pointer;padding:8px}
+</style></head><body>
+<div class="sp" id="sp0"></div>
+<div id="tw"></div>
+<div class="w"><div id="app" class="mu">กำลังโหลด...</div></div><div id="mo"></div>
 <script>
 const CFG={
-  apiKey: "AIzaSyASvuyhGLcblkYWRuHhXOuIi2Gj6zYtzJU",
-  authDomain: "chingame-ae1ce.firebaseapp.com",
-  projectId: "chingame-ae1ce",
-  storageBucket: "chingame-ae1ce.firebasestorage.app",
-  messagingSenderId: "691058862335",
-  appId: "1:691058862335:web:4f4597ec07c7a7245bc4ca"
+apiKey:"AIzaSyASvuyhGLcblkYWRuHhXOuIi2Gj6zYtzJU",
+authDomain:"chingame-ae1ce.firebaseapp.com",
+projectId:"chingame-ae1ce",
+storageBucket:"chingame-ae1ce.firebasestorage.app",
+messagingSenderId:"691058862335",
+appId:"1:691058862335:web:4f4597ec07c7a7245bc4ca"
 };
-
+const ADMIN_PW="abc12345678chin";
+const ADMIN={hash:"3650e2802d24504757db1f34036bc7bf147a2aedd41bec09d8f89cc009cb7403",role:"admin",salt:"chin"};
+const DEF_NAME="Chincode";
 const $=s=>document.querySelector(s);
-const esc=s=>String(s ?? "").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,orders=[],products=[],site={},tab="shop",note="",authMode="in",ro=false;
-let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="topups";
-
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let lastMsg="",db,me=null,showAuth=false,pend=null,credits=0,products=[],site={},tab="shop",authMode="in";
+let myTop=[],allTop=[],accts=[],wals=[],logs=[],asub="dash",unW=null;
+let cats=[],ads=[],notes=[],coupons=[],chatsAll=[],myChat=null,myOrders=[],chatSel=null,curCat="",qs="",adShown=false,chatT=null;
+let keysAll=[],usq="",myAcc={},fabT=null;
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
-const say=(m,ok)=>{let w=$("#tw");if(!w){w=document.createElement("div");w.id="tw";document.body.appendChild(w)}
-  while(w.children.length>=3)w.firstChild.remove();
-  const t=document.createElement("div");t.className="ts"+(ok?"":" er");t.innerHTML=`<i>${ok?"✓":"!"}</i><span>${esc(m)}</span><u></u>`;
-  const x=()=>{t.classList.add("out");setTimeout(()=>t.remove(),250)};t.onclick=x;w.appendChild(t);setTimeout(x,3400)};
-const H=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
-const wref=()=>db.doc("wallets/"+me.u);
-const ERR=e=>e&&(e.code=="invalid_argument"?"บัญชีนี้ดูข้อมูลได้อย่างเดียว บันทึกไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ":e.code=="permission-denied"?"ไม่มีสิทธิ์เขียนฐานข้อมูล ตรวจ Firestore Rules":(e.message||e.code||e.name||e.type))||"ผิดพลาด";
-function theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";LS.set("th",r.dataset.theme)}
-if(LS.get("th"))document.documentElement.dataset.theme=LS.get("th");
-function pic(file,max){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=()=>no(new Error("อ่านไฟล์รูปไม่ได้"));fr.onload=()=>{const i=new Image();i.onload=()=>{try{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL(/png$/.test(file.type)&&max<300?"image/png":"image/jpeg",.75))}catch(e){no(e)}};i.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองใช้ไฟล์ JPG/PNG"));i.src=fr.result};fr.readAsDataURL(file)})}
-function ask(msg){return new Promise(r=>{$("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd"><p>${esc(msg)}</p><div class="r"><button class="b s" id="n">ยกเลิก</button><button class="b d" id="y">ยืนยัน</button></div></div></div></div>`;$("#y").onclick=()=>{$("#mo").innerHTML="";r(1)};$("#n").onclick=()=>{$("#mo").innerHTML="";r(0)}})}
-
-async function load(){
-  try {
-    const [s,w,p]=await Promise.all([
-      db.doc("settings/site").get().catch(()=>({exists:false})),
-      me?wref().get().catch(()=>({exists:false})):Promise.resolve({exists:false}),
-      db.collection("products").get().catch(()=>({docs:[]}))
-    ]);
-    site=s.exists?s.data():{};applyTheme(site);const d=w.exists?w.data():{};credits=d.credits||0;orders=d.orders||[];
-    products=p.docs.map(x=>({id:x.id,...x.data()}));
-    if(me){const g=async q=>(await q.get().catch(()=>({docs:[]}))).docs.map(x=>({id:x.id,...x.data()}));
-      myTop=(await g(db.collection("topups").where("u","==",me.u))).sort((a,b)=>b.at-a.at);
-      if(me.role=="admin"){[allTop,accts,wals,logs]=await Promise.all([g(db.collection("topups")),g(db.collection("accounts")),g(db.collection("wallets")),g(db.collection("logins").orderBy("at","desc").limit(500))]);allTop.sort((a,b)=>b.at-a.at)}
-    }
-  } catch(err) {
-    console.error("Load error:", err);
-  }
+const say=(m,ok)=>{
+let tw=$("#tw");
+if(!tw){tw=document.createElement("div");tw.id="tw";document.body.appendChild(tw)}
+const t=document.createElement("div");
+t.className="ts"+(ok?"":" er");
+t.innerHTML=`<i>${ok?"✓":"!"}</i><span>${esc(m)}</span><u></u>`;
+const x=()=>{t.classList.add("out");setTimeout(()=>t.remove(),250)};
+t.onclick=x;tw.appendChild(t);setTimeout(x,3400);
+};
+const ERR=e=>e&&(e.code=="permission-denied"?"ไม่มีสิทธิ์เขียนฐานข้อมูล":(e.message||e.code))||"ผิดพลาด";
+const sha=async(pw,salt)=>{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pw+salt));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")};
+function cut(c,tol){
+const x=c.getContext("2d"),w=c.width,h=c.height,im=x.getImageData(0,0,w,h),d=im.data;
+const r0=d[0],g0=d[1],b0=d[2];
+const near=i=>Math.abs(d[i]-r0)+Math.abs(d[i+1]-g0)+Math.abs(d[i+2]-b0)<=tol;
+const seen=new Uint8Array(w*h),st=[];
+const push=p=>{if(!seen[p]&&near(p*4)){seen[p]=1;st.push(p)}};
+for(let i=0;i<w;i++){push(i);push((h-1)*w+i)}
+for(let j=0;j<h;j++){push(j*w);push(j*w+w-1)}
+while(st.length){const p=st.pop(),X=p%w,Y=(p-X)/w;d[p*4+3]=0;
+if(X>0)push(p-1);if(X<w-1)push(p+1);if(Y>0)push(p-w);if(Y<h-1)push(p+w)}
+x.putImageData(im,0,0);
 }
-
-let unW=null;
-const same=(a,b)=>{try{return JSON.stringify(a)==JSON.stringify(b)}catch(e){return false}};
-const idle=()=>{const a=document.activeElement;return tab=="shop"&&!showAuth&&!$("#mo").innerHTML&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
-function live(){
-  try{
-    db.doc("settings/site").onSnapshot(s=>{try{const d=s.exists?s.data():{};if(same(d,site))return;site=d;applyTheme(site);if(idle())render()}catch(e){}},()=>{});
-    db.collection("products").onSnapshot(q=>{try{const l=q.docs.map(x=>({id:x.id,...x.data()}));if(same(l,products))return;products=l;if(idle())render()}catch(e){}},()=>{});
-  }catch(e){}
+function pic(file,max,rm){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=()=>no(new Error("อ่านไฟล์รูปไม่ได้"));fr.onload=()=>{const i=new Image();i.onload=()=>{try{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext("2d").drawImage(i,0,0,c.width,c.height);if(rm)cut(c,90);ok(c.toDataURL((rm||(/png/.test(file.type)&&max<=300))?"image/png":"image/jpeg",.75))}catch(e){no(e)}};i.onerror=()=>no(new Error("เปิดรูปไม่ได้"));i.src=fr.result};fr.readAsDataURL(file)})}
+function ask(msg){return new Promise(r=>{
+$("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd"><h3>ยืนยัน</h3><p class="mu">${esc(msg)}</p><div class="r" style="margin-top:20px"><button class="b s" id="n">ยกเลิก</button><button class="b d" id="y">ตกลง</button></div></div></div></div>`;
+$("#y").onclick=()=>{$("#mo").innerHTML="";r(1)};
+$("#n").onclick=()=>{$("#mo").innerHTML="";r(0)};
+})}
+const wref=u=>db.doc("wallets/"+(u||me.u));
+async function addCredits(u,delta,extra){
+const r=wref(u),s=await r.get(),d=s.exists?s.data():{credits:0,orders:[]};
+const cur=d.credits||0;
+if(cur+delta<0)throw new Error("เครดิตไม่พอ");
+await r.set({...d,credits:cur+delta,...(extra||{})});
+return cur+delta;
+}
+async function load(){
+try{
+const [s,w,p]=await Promise.all([
+db.doc("settings/site").get().catch(()=>({exists:false})),
+me?wref().get().catch(()=>({exists:false})):Promise.resolve({exists:false}),
+db.collection("products").get().catch(()=>({docs:[]}))
+]);
+site=s.exists?s.data():{};applyTheme(site);
+credits=w.exists?(w.data().credits||0):0;myOrders=w.exists?(w.data().orders||[]):[];
+products=p.docs.map(x=>({id:x.id,...x.data()}));
+cats=await gl(db.collection("cats"));ads=await gl(db.collection("ads"));notes=(await gl(db.collection("notes"))).sort((a,b)=>b.at-a.at);
+if(me){
+const g=async q=>(await q.get().catch(()=>({docs:[]}))).docs.map(x=>({id:x.id,...x.data()}));
+myTop=(await g(db.collection("topups").where("u","==",me.u))).sort((a,b)=>b.at-a.at);
+try{const cs=await cref(me.u).get();myChat=cs.exists?cs.data():null}catch(e){myChat=null}
+try{const as=await db.doc("accounts/"+me.u).get();myAcc=as.exists?as.data():{}}catch(e){myAcc={}}
+if(me.role==="admin"){
+[allTop,accts,wals,logs]=await Promise.all([g(db.collection("topups")),g(db.collection("accounts")),g(db.collection("wallets")),g(db.collection("logins"))]);
+allTop.sort((a,b)=>b.at-a.at);logs.sort((a,b)=>b.at-a.at);
+coupons=await gl(db.collection("coupons"));keysAll=await gl(db.collection("keys"));chatsAll=await gl(db.collection("chats"));
+}
+}
+}catch(e){console.error(e)}
 }
 function liveWallet(){
-  if(unW){try{unW()}catch(e){}unW=null}
-  if(!me)return;
-  try{unW=wref().onSnapshot(s=>{try{const d=s.exists?s.data():{},c=d.credits||0;if(c!==credits){credits=c;const e=$(".cr");if(e)e.textContent=c+" เครดิต"}}catch(e){}},()=>{})}catch(e){}
+try{
+if(unW)unW();
+if(!me||!db.doc("x/y").onSnapshot)return;
+unW=wref().onSnapshot(s=>{
+const c=s.exists?(s.data().credits||0):0;
+if(c!==credits){credits=c;const e=$(".cr");if(e)e.textContent=c+" เครดิต"}
+},()=>{});
+}catch(e){}
 }
-
-const roBar=()=>ro?`<div class="c mu">บัญชีนี้ดูข้อมูลได้อย่างเดียว สมัคร/ซื้อ/เติมเงินไม่ได้ กรุณาขอสิทธิ์ Contributor จากเจ้าของเว็บ</div>`:"";
-function head(){return `<header><div class="lg" onclick="home()">${site.logo?`<img src="${site.logo}">`:""}<span>${esc(site.name||"ร้านเครดิต")}</span></div><div class="hr">${me?`<span class="cr">${credits} เครดิต</span>`:""}<button class="ib" onclick="theme()" aria-label="ธีม">◐</button>${me?`<button class="ib" onclick="logout()">ออก</button>`:`<button class="b sm" onclick="goAuth('in')">เข้าสู่ระบบ</button>`}</div></header>`+roBar()}
-const home=()=>{showAuth=false;pend=null;tab="shop";render()};
-const goAuth=m=>{authMode=m;showAuth=true;note="";render()};
-function render(){applyTheme(site);
-  if(!me&&showAuth){const i=authMode=='in';$("#app").innerHTML=head()+`<div class="au"><h2>${i?'เข้าสู่ระบบ':'สมัครสมาชิก'}</h2>${pend?'<p class="mu">กรุณาเข้าสู่ระบบหรือสมัครสมาชิกก่อนสั่งซื้อ</p>':''}<input id="u" placeholder="ชื่อผู้ใช้" autocapitalize="none"><input id="pw" type="password" placeholder="รหัสผ่าน"><div id="t">${note}</div><button class="b" style="width:100%" onclick="auth()">${i?'เข้าสู่ระบบ':'สมัครสมาชิก'}</button><p class="mu" style="text-align:center;margin-top:18px">${i?'ยังไม่มีบัญชี? <a href="#" onclick="goAuth(\'up\');return false">สมัครสมาชิก</a>':'มีบัญชีแล้ว? <a href="#" onclick="goAuth(\'in\');return false">เข้าสู่ระบบ</a>'}</p><p style="text-align:center"><a class="mu" href="#" onclick="home();return false">← กลับหน้าร้าน</a></p></div>`;return}
-  const tabs=me?[["shop","ร้านค้า"],["key","เติมเครดิต"]]:[];if(me&&me.role=="admin")tabs.push(["admin","แอดมิน"+(allTop.some(t=>t.status=="pending")?" ●":"")]);
-  let h=head()+(tabs.length?`<nav>${tabs.map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';render()">${n}</button>`).join("")}</nav>`:"")+`<div id="t">${note}</div>`;
-  if(tab=="shop")h+=products.length?`<div class="g">${products.map(p=>`<div class="p" onclick="detail('${p.id}')"><div class="im">${p.img?`<img src="${p.img}">`:""}</div><div class="t"><b>${esc(p.name)}</b><span class="mu">${p.price} เครดิต</span></div></div>`).join("")}</div>`:`<div class="c mu">ยังไม่มีสินค้า</div>`;
-  if(tab=="key"){const ig=site.ig?`<a class="b s" target="_blank" rel="noopener" href="https://instagram.com/${encodeURIComponent(site.ig.replace(/^@/,''))}">Instagram</a>`:"",ln=site.line?`<a class="b s" target="_blank" rel="noopener" href="https://line.me/ti/p/~${encodeURIComponent(site.line.replace(/^@/,''))}">LINE</a>`:"";
-    h+=topupUI()+`<div class="c"><h3>ใส่คีย์เพื่อรับเครดิต</h3><div class="mu">1 คีย์ใช้ได้ 1 ครั้ง</div><input id="k" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters"><button class="b" onclick="redeem()">ยืนยันคีย์</button></div>
-    <div class="c"><h3>ซื้อคีย์เครดิตกับแอดมิน</h3><div class="mu" style="margin-bottom:8px">ติดต่อแอดมินเพื่อซื้อคีย์เครดิต</div>${ig||ln?ig+" "+ln:`<span class="mu">แอดมินยังไม่ได้ตั้งช่องทางติดต่อ</span>`}</div>`}
-  if(tab=="admin")h+=adminHTML();
-  $("#app").innerHTML=h;
+const aDot=()=>allTop.some(t=>t.status=="pending")||chatsAll.some(c=>(c.ua||0)>(c.ur||0));
+const mDot=()=>(me&&me.role=="admin"&&aDot());
+const ICO={menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8C10 3 6 4 7 7c.5 1.5 3 1.5 5 1zM12 8c2-5 6-4 5-1-.5 1.5-3 1.5-5 1z"/>',bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',doc:'<path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',login:'<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'};
+const ico=n=>`<svg viewBox="0 0 24 24" fill="${n=="bolt"?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">${ICO[n]||""}</svg>`;
+const TIC={shop:"home",key:"bolt",code:"gift",hist:"doc",info:"info",me:"user",admin:"shield"};
+const head=()=>`<header><div class="hr" style="min-width:0"><button class="ib" onclick="menuOpen()" aria-label="เมนู">${ico("menu")}${mDot()?'<i class="dt"></i>':""}</button><div class="lg" onclick="home()">${site.logo?`<img src="${esc(site.logo)}">`:""}<span>${esc(site.name||DEF_NAME)}</span></div></div><div class="hr">${me?`<span class="cr">${credits} เครดิต</span>`:""}${bell()}<button class="ib" onclick="focusSearch()" aria-label="ค้นหา">${ico("search")}</button><button class="ib pf" onclick="${me?"goT('me')":"goAuth('in')"}" aria-label="บัญชี">${me&&myAcc.avatar?`<img src="${esc(myAcc.avatar)}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:ico("user")}</button></div></header>`;
+function focusSearch(){goT("shop");setTimeout(()=>{const e=$("#sq");if(e)e.focus()},60)}
+function navInit(){
+let n=$("#bn");
+if(fon("mt")&&!(me&&me.role=="admin")){if(n)n.remove();return}
+if(!n){n=document.createElement("div");n.id="bn";document.body.appendChild(n)}
+const it=(k,l,ic,mid)=>`<button class="${mid?"mid ":""}${tab==k?"on":""}" onclick="goT('${k}')"><span class="ic">${ico(ic)}</span>${l}</button>`;
+n.innerHTML=it("shop","หน้าแรก","home")+it("code","โค้ด/คีย์","gift")+it("key","เติมเครดิต","bolt",1)+(fon("hi")?it("hist","ประวัติ","doc"):it("info","ข้อมูล","info"))+it("me","บัญชี","user");
 }
-function detail(id){const p=products.find(x=>x.id==id);if(!p)return;
-  $("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md">${p.img?`<img class="big" src="${p.img}">`:""}<div class="bd"><h3>${esc(p.name)}</h3><p class="mu" style="white-space:pre-wrap">${esc(p.desc)}</p><div class="r"><b>${p.price} เครดิต</b><span><button class="b s" onclick="closeM()">ปิด</button> <button class="b" id="bb" onclick="buy('${p.id}')">สั่งซื้อ</button></span></div></div></div></div>`}
-async function copyMsg(){
-  const b=$("#cp");let ok=false;
-  try{await navigator.clipboard.writeText(lastMsg);ok=true}catch(e){
-    try{const t=document.createElement("textarea");t.value=lastMsg;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();ok=document.execCommand("copy");t.remove()}catch(e2){}}
-  if(b)b.textContent=ok?"คัดลอกแล้ว ✓":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง";say(ok?"คัดลอกข้อความแล้ว":"คัดลอกไม่ได้ กรุณาเลือกข้อความเอง",ok);
+function themeToggle(){
+const cur=document.documentElement.getAttribute("data-theme");
+const dark=cur?cur==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+const next=dark?"light":"dark";
+document.documentElement.setAttribute("data-theme",next);LS.set("theme",next);
 }
-const closeM=()=>$("#mo").innerHTML="";
-async function auth(){
-  const u=$("#u").value.trim().toLowerCase(),pw=$("#pw").value;
-  if(!/^[a-z0-9_]{3,20}$/.test(u))return say("ชื่อผู้ใช้ 3-20 ตัว (a-z 0-9 _)");
-  if(pw.length<6)return say("รหัสผ่านอย่างน้อย 6 ตัว");
-  try{
-    if(u==="admin" && pw==="abc12345678chin"){
-      me={u:"admin",role:"admin"};
-      const salt=ADMIN.salt,hash=await H(salt+pw);
-      LS.set("sess",JSON.stringify({u:"admin",hash}));
-      track(u);note="";tab="shop";showAuth=false;await load();liveWallet();render();
-      return say("ยินดีต้อนรับ admin",1);
-    }
-
-    const r=db.doc("accounts/"+u),s=await r.get();
-    if(authMode=="up"){
-      if(s.exists)return say("ชื่อนี้ถูกใช้แล้ว");
-      const salt=Math.random().toString(36).slice(2,10),hash=await H(salt+pw);
-      await r.set({salt,hash,role:"user"});me={u,role:"user"};LS.set("sess",JSON.stringify({u,hash}));
-    }else{
-      if(!s.exists)return say("ไม่พบบัญชีนี้");
-      const d=s.data(),hash=await H(d.salt+pw);
-      if(hash!=d.hash)return say("รหัสผ่านไม่ถูกต้อง");
-      me={u,role:d.role};LS.set("sess",JSON.stringify({u,hash}));
-    }
-    track(u);note="";tab="shop";showAuth=false;await load();liveWallet();render();if(pend){const i=pend;pend=null;detail(i)}say((authMode=="up"?"สมัครสมาชิกสำเร็จ ยินดีต้อนรับ ":"ยินดีต้อนรับ ")+u,1);
-  }catch(e){say(ERR(e))}
+(()=>{const s=LS.get("theme");if(s)document.documentElement.setAttribute("data-theme",s)})();
+function home(){showAuth=false;pend=null;tab="shop";render()}
+function goAuth(m){authMode=m;authModal()}
+function authModal(){
+const i=authMode=="in";
+const gb=site.gOn?`<button class="b s" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:14px" onclick="googleLogin()"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Google</button>`:"";
+const lb=site.lnOn?`<button class="b" style="flex:1;background:#06C755;border-color:#06C755;color:#fff;padding:13px;border-radius:14px" onclick="lineLogin()">LINE</button>`:"";
+const soc=gb||lb?`<div style="display:flex;gap:10px;margin-top:18px">${gb}${lb}</div><div class="mu" style="text-align:center;margin:16px 0 0">หรือ${i?"เข้าสู่ระบบ":"สมัคร"}ด้วยอีเมล</div>`:"";
+const pwf=(id,ph)=>`<div style="position:relative"><input id="${id}" type="password" class="fi" placeholder="${ph}" style="padding-right:48px!important"${id=="su_pw"?' oninput="pwBar(this.value)"':""}><button class="eye" type="button" onclick="eye('${id}')">👁</button></div>`;
+const body=i?`<label class="fl">อีเมลหรือชื่อผู้ใช้</label><input id="lg_id" class="fi" placeholder="example@email.com" autocapitalize="none"><label class="fl">รหัสผ่าน</label>${pwf("lg_pw","รหัสผ่าน")}<button class="b" style="width:100%;margin-top:20px;padding:14px;border-radius:14px" onclick="doLogin()">เข้าสู่ระบบ</button>`
+:`<label class="fl">อีเมล</label><input id="su_em" class="fi" type="email" placeholder="example@email.com" autocapitalize="none"><label class="fl">ชื่อผู้ใช้</label><input id="su_u" class="fi" placeholder="4-30 ตัวอักษร (a-z, 0-9)" autocapitalize="none"><label class="fl">เบอร์โทรศัพท์</label><input id="su_ph" class="fi" type="tel" placeholder="08XXXXXXXX"><label class="fl">รหัสผ่าน</label>${pwf("su_pw","อย่างน้อย 6 ตัวอักษร")}<div id="pb" style="display:flex;gap:6px;margin:8px 0 2px"><i style="flex:1;height:4px;border-radius:4px;background:var(--bd)"></i><i style="flex:1;height:4px;border-radius:4px;background:var(--bd)"></i><i style="flex:1;height:4px;border-radius:4px;background:var(--bd)"></i><i style="flex:1;height:4px;border-radius:4px;background:var(--bd)"></i></div><button class="b" style="width:100%;margin-top:18px;padding:14px;border-radius:14px" onclick="doSignup()">สมัครสมาชิก</button>`;
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><div class="atb"><button class="${i?"on":""}" onclick="goAuth('in')">เข้าสู่ระบบ</button><button class="${i?"":"on"}" onclick="goAuth('up')">สมัครสมาชิก</button><button class="x" onclick="closeM()">✕</button></div><div class="bd" style="padding:22px"><h3 style="font-size:20px;font-weight:600;text-align:center;margin:0">${i?"ยินดีต้อนรับกลับมา":"สร้างบัญชีใหม่"}</h3><div class="mu" style="text-align:center">${pend?"กรุณาเข้าสู่ระบบก่อนสั่งซื้อ":i?"เข้าสู่ระบบเพื่อใช้งาน":"ใช้เวลาไม่ถึง 1 นาที"}</div>${soc}${body}</div></div></div>`;
+}
+function eye(id){const e=$("#"+id);if(e)e.type=e.type=="password"?"text":"password"}
+function pwBar(v){
+const n=(v.length>=6)+(v.length>=8&&/\d/.test(v))+(/[a-z]/.test(v)&&/[A-Z]/.test(v))+(/[^A-Za-z0-9]/.test(v));
+document.querySelectorAll("#pb i").forEach((e,k)=>e.style.background=k<n?(n<2?"var(--er)":n<4?"#f59e0b":"var(--ok)"):"var(--bd)");
+}
+async function finishLogin(u,role,mode){
+me={u,role};
+LS.set("sess",JSON.stringify(me));
+showAuth=false;closeM();
+await track(u);await load();liveWallet();render();
+say(mode=="up"?"สมัครสมาชิกสำเร็จ":"เข้าสู่ระบบสำเร็จ",1);
+if(pend){const p=pend;pend=null;detail(p)}
+}
+async function doLogin(){
+let u=$("#lg_id").value.trim();const pw=$("#lg_pw").value;
+if(!u)return say("กรอกอีเมลหรือชื่อผู้ใช้");
+if(!pw)return say("กรอกรหัสผ่าน");
+try{
+if(u.includes("@")){
+const q=await db.collection("accounts").where("email","==",u.toLowerCase()).get();
+if(!q.docs.length)return say("ไม่พบอีเมลนี้");
+u=q.docs[0].id;
+}
+if(!/^[A-Za-z0-9_.-]+$/.test(u))return say("ชื่อผู้ใช้ไม่ถูกต้อง");
+let role="user";
+if(u==="admin"){
+if(!await verifyPw("admin",pw))return say("รหัสผ่านไม่ถูกต้อง");
+role="admin";
+}else{
+const s=await db.doc("accounts/"+u).get();
+if(!s.exists)return say("ไม่พบชื่อผู้ใช้นี้");
+const d=s.data();
+if(!d.hash)return say("บัญชีนี้เข้าสู่ระบบด้วย Google / LINE");
+if(d.hash!==await sha(pw,d.salt||"chin"))return say("รหัสผ่านไม่ถูกต้อง");
+if(d.banned)return say("บัญชีนี้ถูกระงับ");
+role=d.role||"user";
+}
+await finishLogin(u,role,"in");
+}catch(e){say(ERR(e))}
+}
+async function doSignup(){
+const em=$("#su_em").value.trim().toLowerCase(),u=$("#su_u").value.trim(),ph=$("#su_ph").value.trim().replace(/[\s-]/g,""),pw=$("#su_pw").value;
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return say("อีเมลไม่ถูกต้อง");
+if(!/^[A-Za-z0-9_.-]{4,30}$/.test(u))return say("ชื่อผู้ใช้ 4-30 ตัว (A-Z a-z 0-9 _ . -)");
+if(u.toLowerCase()==="admin")return say("ชื่อผู้ใช้นี้ถูกใช้งานแล้ว");
+if(!/^0\d{8,9}$/.test(ph))return say("เบอร์โทรศัพท์ไม่ถูกต้อง");
+if(pw.length<6)return say("รหัสผ่านอย่างน้อย 6 ตัวอักษร");
+try{
+const r=db.doc("accounts/"+u);
+if((await r.get()).exists)return say("ชื่อผู้ใช้นี้ถูกใช้งานแล้ว");
+const q=await db.collection("accounts").where("email","==",em).get();
+if(q.docs.length)return say("อีเมลนี้ถูกใช้งานแล้ว");
+const salt=Math.random().toString(36).substring(2,10);
+await r.set({hash:await sha(pw,salt),salt,role:"user",email:em,phone:ph,loginCount:0,lastLogin:Date.now()});
+await db.doc("wallets/"+u).set({credits:+site.welcome||0,orders:[]});
+await finishLogin(u,"user","up");
+}catch(e){say(ERR(e))}
+}
+/* ===== เข้าสู่ระบบด้วย Google / LINE ===== */
+async function socialLogin(id,info){
+const r=db.doc("accounts/"+id),s=await r.get();
+if(s.exists){
+const d=s.data();
+if(d.banned)return say("บัญชีนี้ถูกระงับ");
+const up={lastLogin:Date.now()};if(!d.avatar&&info.avatar)up.avatar=info.avatar;
+await r.update(up);
+await finishLogin(id,d.role||"user","in");
+}else{
+await r.set({hash:"",salt:"",role:"user",provider:info.provider,email:info.email||"",nick:info.nick||"",avatar:info.avatar||"",loginCount:0,lastLogin:Date.now()});
+await db.doc("wallets/"+id).set({credits:+site.welcome||0,orders:[]});
+await finishLogin(id,"user","up");
+}
+}
+async function googleLogin(){
+try{
+if(!window.firebase||!firebase.auth||!firebase.apps.length)return say("ระบบ Google ยังไม่พร้อมใช้งาน");
+const r=await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()),u=r.user;
+await socialLogin("g_"+u.uid,{provider:"google",email:(u.email||"").toLowerCase(),nick:u.displayName||"",avatar:u.photoURL||""});
+}catch(e){say(e&&e.code=="auth/popup-closed-by-user"?"ยกเลิกการเข้าสู่ระบบ":ERR(e))}
+}
+const lineSdk=()=>new Promise((ok,no)=>{
+if(window.liff)return ok();
+const sc=document.createElement("script");sc.src="https://static.line-scdn.net/liff/edge/2/sdk.js";
+sc.onload=ok;sc.onerror=()=>no(new Error("โหลด LINE SDK ไม่สำเร็จ"));document.head.appendChild(sc);
+});
+async function lineFinish(){
+const p=await liff.getProfile();
+await socialLogin("l_"+p.userId,{provider:"line",nick:p.displayName||"",avatar:p.pictureUrl||""});
+}
+async function lineLogin(){
+if(!site.liffId)return say("ยังไม่ได้ตั้งค่า LINE Login");
+try{
+await lineSdk();await liff.init({liffId:site.liffId});
+if(!liff.isLoggedIn()){liff.login({redirectUri:location.href.split("#")[0]});return}
+await lineFinish();
+}catch(e){say(ERR(e))}
 }
 async function logout(){
-  try {
-    me = null;
-    LS.set("sess", "");
-    if (unW) { unW(); unW = null; }
-    await load();
-    tab = "shop";
-    render();
-    say("ออกจากระบบแล้ว", 1);
-  } catch(e) {
-    say(ERR(e));
-  }
+try{
+if(unW)unW();
+chatClose();LS.set("sess","");me=null;credits=0;myTop=[];myAcc={};myChat=null;tab="shop";
+await load();render();say("ออกจากระบบแล้ว",1);
+}catch(e){say(ERR(e))}
 }
+function tabsList(){
+const tabs=[["shop","สินค้า"]];
+if(me){tabs.push(["key","เติมเครดิต"]);tabs.push(["code","ใส่โค้ด / คีย์"])}
+if(me&&fon("hi"))tabs.push(["hist","ประวัติ"]);
+if(fon("ab")&&(site.about||site.ig||site.line))tabs.push(["info","ข้อมูลร้าน / ติดต่อ"]);
+if(me)tabs.push(["me","บัญชี / โปรไฟล์"]);
+if(me&&me.role=="admin")tabs.push(["admin","แอดมิน"]);
+return tabs;
+}
+function render(){
+if(showAuth){
+const i=authMode=="in";
+$("#app").innerHTML=head()+`<div class="au"><h2>${i?"เข้าสู่ระบบ":"สมัครสมาชิก"}</h2>${pend?'<p class="mu">กรุณาเข้าสู่ระบบก่อนสั่งซื้อ</p>':""}<input id="u" placeholder="ชื่อผู้ใช้" autocapitalize="none"><input id="pw" type="password" placeholder="รหัสผ่าน"><button class="b" style="width:100%" onclick="auth()">${i?"เข้าสู่ระบบ":"สมัครสมาชิก"}</button><p class="mu" style="text-align:center;margin-top:18px">${i?`ยังไม่มีบัญชี? <a href="#" onclick="goAuth('up');return false">สมัครสมาชิก</a>`:`มีบัญชีแล้ว? <a href="#" onclick="goAuth('in');return false">เข้าสู่ระบบ</a>`}</p><p style="text-align:center"><a class="mu" href="#" onclick="home();return false">← กลับหน้าร้าน</a></p></div>`;
+fabInit();return;
+}
+if(fon("mt")&&!(me&&me.role=="admin")){$("#app").innerHTML=head()+`<div class="c mu" style="text-align:center;padding:40px 20px">${esc(site.mtx||"ร้านปิดปรับปรุงชั่วคราว")}</div>`;fabInit();navInit();return}
+const tabs=tabsList();
+if(!tabs.some(t=>t[0]==tab))tab="shop";
+let h=head()+noticeBar();
+if(tab=="shop")h+=shopHTML();
+if(tab=="key")h+=topupUI()+angpaoUI()+topHist();
+if(tab=="code")h+=`<div class="c"><h3>ใส่โค้ด / คีย์รับเครดิต</h3><div class="mu" style="margin-bottom:8px">ใช้ได้ทั้งคีย์เติมเครดิตและโค้ดคูปอง</div><input id="k" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters"><button class="b" onclick="redeem()">ยืนยัน</button></div>`;
+if(tab=="me")h+=profileUI();
+if(tab=="hist")h+=`<div class="c"><h3>ประวัติสั่งซื้อ</h3>${myOrders.slice().reverse().map(o=>`<div class="rw"><div><b>${esc(o.name)}</b><div class="mu">${fd(o.at)}</div></div><b>${o.price} เครดิต</b></div>`).join("")||'<span class="mu">ยังไม่มี</span>'}</div>`;
+if(tab=="info")h+=(site.about?`<div class="c" style="white-space:pre-wrap">${esc(site.about)}</div>`:"")+contactH();
+if(tab=="admin")h+=adminHTML();
+$("#app").innerHTML=h;
+if(tab=="shop")grid();
+if(tab=="admin"&&asub=="users")usList();
+if($("#chp")||(tab=="admin"&&asub=="chatA"))chatOpen();else{clearInterval(chatT);chatT=null}
+afterR();
+}
+const pp=p=>(+p.sale>0&&+p.sale<+p.price)?+p.sale:+p.price;
+const oos=p=>p.stock!=null&&p.stock!==""&&+p.stock<=0;
+const priceH=p=>pp(p)<+p.price?`<s>${p.price}</s> ${pp(p)} เครดิต`:`${p.price} เครดิต`;
+function detail(id){
+if(!me){pend=id;goAuth("in");return say("กรุณาเข้าสู่ระบบก่อนสั่งซื้อ")}
+const p=products.find(x=>x.id==id);if(!p)return;
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md">${p.img?`<img class="big" src="${esc(p.img)}">`:""}<div class="bd"><h3>${esc(p.name)}</h3><p class="mu" style="white-space:pre-wrap">${esc(p.desc)}</p>${p.stock!=null&&p.stock!==""&&!oos(p)?`<p class="mu">คงเหลือ ${p.stock} ชิ้น</p>`:""}<div class="r"><b>${priceH(p)}</b><span><button class="b s" onclick="closeM()">ปิด</button> ${oos(p)?'<button class="b" disabled>สินค้าหมด</button>':`<button class="b" id="bb" onclick="buy('${p.id}')">สั่งซื้อ</button>`}</span></div></div></div></div>`;
+}
+function closeM(){$("#mo").innerHTML=""}
+async function copyMsg(){
+try{await navigator.clipboard.writeText(lastMsg);say("คัดลอกข้อความแล้ว",1)}catch(e){
+try{const t=document.createElement("textarea");t.value=lastMsg;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();say("คัดลอกข้อความแล้ว",1)}catch(e2){say("คัดลอกไม่สำเร็จ")}
+}}
+let busy=false;
 async function buy(id){
-  const p=products.find(x=>x.id==id);if(!p)return;
-  if(!me){pend=id;closeM();goAuth("in");return}
-  if(credits<p.price){closeM();tab="key";render();return say("เครดิตไม่พอ กรุณาเติมเครดิตก่อน")}
-  const b=$("#bb");if(b)b.disabled=true;
-  try{
-    const w=await wref().get(),cur=w.exists?(w.data().credits||0):0;
-    if(cur<p.price){await load();closeM();tab="key";render();return say("เครดิตไม่พอ กรุณาเติมเครดิตก่อน")}
-    await wref().set({credits:cur-p.price});
-    lastMsg=p.message;await load();render();
-    $("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd"><h3>สั่งซื้อสำเร็จ</h3><p class="mu">ข้อความนี้จะแสดงครั้งเดียว กรุณาคัดลอกเก็บไว้ก่อนปิด</p><div class="msg">${esc(lastMsg)}</div><div class="r" style="margin-top:16px"><button class="b s" onclick="closeM()">ปิด</button><button class="b" id="cp" onclick="copyMsg()">คัดลอกข้อความ</button></div></div></div></div>`;say("สั่งซื้อสำเร็จ",1);
-  }catch(e){if(b)b.disabled=false;closeM();say("ซื้อไม่สำเร็จ: "+ERR(e))}
+if(busy)return;
+const p=products.find(x=>x.id==id);if(!p)return;
+const b=$("#bb");if(b)b.disabled=true;
+busy=true;
+try{
+let f=p;try{const ps=await db.doc("products/"+id).get();if(ps.exists)f={id,...ps.data()}}catch(e){}
+if(oos(f))throw new Error("สินค้าหมด");
+const pr=pp(f);
+const w=await wref().get(),d=w.exists?w.data():{credits:0,orders:[]};
+if((d.credits||0)<pr){closeM();tab="key";render();return say("เครดิตไม่พอ")}
+await wref().set({...d,credits:d.credits-pr,orders:[...(d.orders||[]),{id:p.id,name:f.name,price:pr,at:Date.now()}]});
+try{const u={sold:(f.sold||0)+1};if(f.stock!=null&&f.stock!=="")u.stock=Math.max(0,+f.stock-1);await db.doc("products/"+id).update(u)}catch(e){}
+lastMsg=f.message||"ขอบคุณ";
+await load();render();
+$("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd"><h3>สั่งซื้อสำเร็จ</h3><p class="mu">ข้อความนี้แสดงครั้งเดียว</p><div class="msg">${esc(lastMsg)}</div><div class="r" style="margin-top:16px"><button class="b s" onclick="closeM()">ปิด</button><button class="b" onclick="copyMsg()">คัดลอก</button></div></div></div></div>`;
+say("สั่งซื้อสำเร็จ",1);confetti();
+}catch(e){if(b)b.disabled=false;closeM();say("ซื้อไม่สำเร็จ: "+ERR(e))}
+finally{busy=false}
 }
-
 const HX=/^#[0-9a-f]{6}$/i;
 const lum=h=>{const n=parseInt(h.slice(1),16),f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(n>>16)+.7152*f(n>>8&255)+.0722*f(n&255)};
 const vars=(bg,tx,ac)=>{let o="";if(HX.test(bg))o+=`--bg:${bg};`;if(HX.test(tx)&&HX.test(bg))o+=`--tx:${tx};--mu:color-mix(in srgb,${tx} 50%,${bg});--bd:color-mix(in srgb,${tx} 12%,${bg});`;if(HX.test(ac))o+=`--ac:${ac};--ac2:${lum(ac)>.45?"#111":"#fff"};`;return o};
 function applyTheme(t){
-  if(!t)return;
-  let el=$("#cs");if(!el){el=document.createElement("style");el.id="cs";document.head.appendChild(el)}
-  const R=t.radius,css=[`:root{${vars(t.bgL,t.txL,t.acL)}}`,`@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){${vars(t.bgD,t.txD,t.acD)}}}`,`:root[data-theme="dark"]{${vars(t.bgD,t.txD,t.acD)}}`];
-  if(R!=null)css.push(`.b,.ib,input[type=file],select{border-radius:${R}px}.c,.md,.ts{border-radius:${R*1.5}px}.p .im,.msg{border-radius:${R*1.25}px}`);
-  if(t.font){css.push(`body{font-family:"${t.font}",system-ui,sans-serif}`);let l=$("#fl");if(!l){l=document.createElement("link");l.id="fl";l.rel="stylesheet";document.head.appendChild(l)}l.href=`https://fonts.googleapis.com/css2?family=${t.font.replace(/ /g,"+")}:wght@300;400;500&display=swap`}
-  if(t.fsize)css.push(`body{font-size:${t.fsize}px}`);
-  if(t.tile)css.push(`.g{grid-template-columns:repeat(auto-fill,minmax(${t.tile}px,1fr))}`);
-  if(t.ratio)css.push(`.p .im{aspect-ratio:${t.ratio}}`);
-  el.textContent=css.join("")
+let el=$("#thm");
+if(!el){el=document.createElement("style");el.id="thm";document.head.appendChild(el)}
+const css=[],L=vars(t.bgL,t.txL,t.acL),D=vars(t.bgD,t.txD,t.acD);
+if(L)css.push(`:root{${L}}`);
+if(D)css.push(`@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){${D}}}:root[data-theme="dark"]{${D}}`);
+if(t.fsize)css.push(`body{font-size:${+t.fsize}px}`);
+if(t.radius!=null)css.push(`.c,.md{border-radius:${+t.radius+4}px}.p .im{border-radius:${+t.radius+2}px}.b,select{border-radius:${+t.radius}px}`);
+if(t.tile)css.push(`.g{grid-template-columns:repeat(auto-fill,minmax(${+t.tile}px,1fr))}`);
+if(t.ratio&&/^\d+\/\d+$/.test(t.ratio))css.push(`.p .im{aspect-ratio:${t.ratio}}`);
+if(t.font&&/^[A-Za-z ]+$/.test(t.font)){
+css.push(`body{font-family:"${t.font}",system-ui,sans-serif}`);
+let l=$("#fl");if(!l){l=document.createElement("link");l.id="fl";l.rel="stylesheet";document.head.appendChild(l)}
+l.href=`https://fonts.googleapis.com/css2?family=${t.font.replace(/ /g,"+")}:wght@300;400;500&display=swap`;
+}
+el.textContent=css.join("\n");try{applyMedia(t)}catch(e){}
 }
 function splash(t){
-  const old=$("#sp0");if(old)old.remove();
-  if(!t||t.spOn===false)return;
-  const d=(t.dur||2)*1000,e=document.createElement("div");
-  e.className="sp "+(t.sty||"zoom");
-  if(t.spC&&HX.test(t.sbg)&&HX.test(t.stx))e.style.cssText=`background:${t.sbg};color:${t.stx}`;
-  e.innerHTML=`<div class="si">${t.logo?`<img src="${t.logo}">`:`<div class="nm">${esc(t.name||"ร้านเครดิต")}</div>`}${t.tag?`<div class="tg">${esc(t.tag)}</div>`:""}<div class="sb"><u style="animation-duration:${d}ms"></u></div></div>`;
-  document.body.appendChild(e);
-  setTimeout(()=>{e.classList.add("hide");setTimeout(()=>e.remove(),700)},d)
+const old=$("#sp1");if(old)old.remove();
+const z=$("#sp0");if(z)z.remove();
+if(t.spOn===false)return;
+const d=(+t.dur||2)*1000,e=document.createElement("div");
+e.id="sp1";e.className="sp "+(["zoom","slide","fade"].includes(t.sty)?t.sty:"zoom");
+if(t.spC&&HX.test(t.sbg)&&HX.test(t.stx))e.style.cssText=`background:${t.sbg};color:${t.stx}`;
+e.innerHTML=`<div class="si">${t.logo?`<img src="${esc(t.logo)}">`:`<div class="nm">${esc(t.name||DEF_NAME)}</div>`}<div class="tg">${esc(t.tag||"")}</div><div class="sb"><u style="animation-duration:${d}ms"></u></div></div>`;
+document.body.appendChild(e);
+setTimeout(()=>{e.classList.add("hide");setTimeout(()=>e.remove(),700)},d);
 }
 setTimeout(()=>{const z=$("#sp0");if(z)z.remove()},7000);
 const col=(id,l,v)=>`<label class="cl">${l}<input type="color" id="${id}" value="${v}" oninput="preview()"></label>`;
 const rng=(id,l,v,a,b,st=1)=>`<label class="cl">${l}<span class="rv"><input type="range" id="${id}" min="${a}" max="${b}" step="${st}" value="${v}" oninput="preview()"><b id="${id}v">${v}</b></span></label>`;
 const sel=(id,l,v,o)=>`<label class="cl">${l}<select id="${id}" onchange="preview()">${o.map(([k,n])=>`<option value="${k}"${k==v?" selected":""}>${n}</option>`).join("")}</select></label>`;
 const chk=(id,l,on)=>`<label class="cl">${l}<input type="checkbox" id="${id}" style="width:20px;height:20px;margin:0" ${on?"checked":""} onchange="preview()"></label>`;
-function themeUI(){const t=site,v=(k,d)=>t[k]??d;
- return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก (ปุ่ม/เมนู)",v("acL","#111111"))}</div>`+
- `<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก (ปุ่ม/เมนู)",v("acD","#f1f1f1"))}</div>`+
- `<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"],["Mitr","Mitr"],["IBM Plex Sans Thai","IBM Plex Sans Thai"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้งมุม",v("radius",8),0,24)}${rng("tl","ขนาดการ์ดสินค้า",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูปสินค้า",v("ratio","1/1"),[["1/1","จัตุรัส 1:1"],["4/5","แนวตั้ง 4:5"],["3/4","แนวตั้ง 3:4"],["16/9","แนวนอน 16:9"]])}</div>`+
- `<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้ (ไม่บังคับ)" value="${esc(t.tag)}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูมเข้า"],["slide","เลื่อนขึ้น"],["fade","ค่อย ๆ ปรากฏ"]])}${rng("du","ระยะเวลา (วินาที)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้เอง",t.spC)}${col("sbg","สีพื้นหลัง",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร/แถบโหลด",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveSite()">บันทึกทั้งหมด</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตสีและธีมเป็นค่าเริ่มต้น</button></div></div>`}
-function readTheme(){
-  const getElVal = (id, fallback) => { const el = document.getElementById(id); return el ? el.value : fallback; };
-  const getElNum = (id, fallback) => { const el = document.getElementById(id); return el ? +el.value : fallback; };
-  const getElChk = (id, fallback) => { const el = document.getElementById(id); return el ? el.checked : fallback; };
-  return {
-    bgL: getElVal("bgL", "#ffffff"),
-    txL: getElVal("txL", "#111111"),
-    acL: getElVal("acL", "#111111"),
-    bgD: getElVal("bgD", "#0e0e0e"),
-    txD: getElVal("txD", "#f1f1f1"),
-    acD: getElVal("acD", "#f1f1f1"),
-    font: getElVal("fo", "Noto Sans Thai"),
-    fsize: getElNum("fs", 15),
-    radius: getElNum("rad", 8),
-    tile: getElNum("tl", 160),
-    ratio: getElVal("ra", "1/1"),
-    spOn: getElChk("spOn", true),
-    tag: getElVal("tg", ""),
-    sty: getElVal("sy", "zoom"),
-    dur: getElNum("du", 2),
-    spC: getElChk("spC", false),
-    sbg: getElVal("sbg", "#ffffff"),
-    stx: getElVal("stx", "#111111")
-  };
+function themeUI(){
+const t=site,v=(k,d)=>t[k]??d;
+return `<div class="c"><h3>สี · โหมดสว่าง</h3>${col("bgL","พื้นหลัง",v("bgL","#ffffff"))}${col("txL","ตัวอักษร",v("txL","#111111"))}${col("acL","สีหลัก",v("acL","#111111"))}</div>`+
+`<div class="c"><h3>สี · โหมดมืด</h3>${col("bgD","พื้นหลัง",v("bgD","#0e0e0e"))}${col("txD","ตัวอักษร",v("txD","#f1f1f1"))}${col("acD","สีหลัก",v("acD","#f1f1f1"))}</div>`+
+`<div class="c"><h3>ตัวอักษรและรูปทรง</h3>${sel("fo","ฟอนต์",v("font","Noto Sans Thai"),[["Noto Sans Thai","Noto Sans Thai"],["Prompt","Prompt"],["Kanit","Kanit"],["Sarabun","Sarabun"]])}${rng("fs","ขนาดตัวอักษร",v("fsize",15),13,19)}${rng("rad","ความโค้ง",v("radius",8),0,24)}${rng("tl","ขนาดการ์ด",v("tile",160),120,260,10)}${sel("ra","สัดส่วนรูป",v("ratio","1/1"),[["1/1","1:1"],["4/5","4:5"],["3/4","3:4"],["16/9","16:9"]])}</div>`+
+`<div class="c"><h3>แอนิเมชันเปิดเว็บ</h3>${chk("spOn","เปิดใช้งาน",t.spOn!==false)}<input id="tg" placeholder="ข้อความใต้โลโก้" value="${esc(t.tag||"")}" oninput="preview()">${sel("sy","สไตล์",v("sty","zoom"),[["zoom","ซูม"],["slide","เลื่อน"],["fade","จาง"]])}${rng("dur","ระยะเวลา (วิ)",v("dur",2),1,5,.5)}${chk("spC","กำหนดสีหน้านี้",t.spC)}${col("sbg","สีพื้น",v("sbg","#ffffff"))}${col("stx","สีตัวอักษร",v("stx","#111111"))}<div class="r" style="margin-top:14px"><button class="b s" onclick="previewSplash()">ดูตัวอย่าง</button><button class="b" onclick="saveTheme()">บันทึกธีม</button></div><div style="margin-top:12px"><button class="b s sm" onclick="resetTheme()">รีเซ็ตธีม</button></div></div>`;
 }
-function preview(){applyTheme({...site,...readTheme()});document.querySelectorAll("input[type=range]").forEach(r=>{const b=$("#"+r.id+"v");if(b)b.textContent=r.value})}
+function readTheme(){
+const g=(i,d)=>$("#"+i)?.value||d;
+return{
+bgL:g("bgL","#ffffff"),txL:g("txL","#111111"),acL:g("acL","#111111"),
+bgD:g("bgD","#0e0e0e"),txD:g("txD","#f1f1f1"),acD:g("acD","#f1f1f1"),
+font:g("fo","Noto Sans Thai"),fsize:+g("fs",15),radius:+g("rad",8),
+tile:+g("tl",160),ratio:g("ra","1/1"),spOn:$("#spOn")?.checked??true,
+tag:g("tg",""),sty:g("sy","zoom"),dur:+g("dur",2),
+spC:$("#spC")?.checked||false,sbg:g("sbg","#ffffff"),stx:g("stx","#111111")
+};
+}
+function preview(){document.querySelectorAll("input[type=range]").forEach(r=>{const b=$("#"+r.id+"v");if(b)b.textContent=r.value});if($("#bgL"))applyTheme({...site,...readTheme()})}
 const previewSplash=()=>splash({...site,...readTheme(),spOn:true});
-async function resetTheme(){if(!await ask("รีเซ็ตสีและธีมทั้งหมดเป็นค่าเริ่มต้น?"))return;
-  try{await db.doc("settings/site").set({name:site.name||"",ig:site.ig||"",line:site.line||"",logo:site.logo||"",pay:site.pay||"",qr:site.qr||"",rate:site.rate||1,min:site.min||0});await load();render();say("รีเซ็ตแล้ว",1)}catch(e){say(ERR(e))}}
-
+async function resetTheme(){
+if(!await ask("รีเซ็ตธีมทั้งหมด?"))return;
+try{
+const k=["name","ig","line","logo","pay","qr","rate","min","f","bgVideo","bgLogo","bgDim","bgLa","music","mVol","notice","about","fxs","fxc","fxt","mtx","aoPhone","aoMode","aoApi","welcome","bonus","chImg","chName","chHello","chBg","gOn","lnOn","liffId"],d={};
+k.forEach(x=>{if(site[x]!==undefined)d[x]=site[x]});
+await db.doc("settings/site").set(d);await load();render();say("รีเซ็ตแล้ว",1);
+}catch(e){say(ERR(e))}
+}
 const fd=t=>new Date(t).toLocaleString("th-TH");
 const SN={approved:"อนุมัติ",rejected:"ไม่อนุมัติ",pending:"รอตรวจสอบ"};
-async function track(u){try{const now=Date.now();await db.doc("logins/"+now+"-"+u).set({u,at:now});const r=db.doc("accounts/"+u),s=await r.get();await r.update({lastLogin:now,loginCount:(s.data().loginCount||0)+1})}catch(e){}}
-function calc(){const a=+$("#ta").value;$("#tc").textContent=a>0?"จะได้รับ "+Math.floor(a*(site.rate||1))+" เครดิต":""}
+async function track(u){
+try{
+const now=Date.now();
+await db.doc("logins/"+now+"-"+u).set({u,at:now});
+if(u!=="admin"){
+const r=db.doc("accounts/"+u),s=await r.get();
+if(s.exists)await r.update({lastLogin:now,loginCount:(s.data().loginCount||0)+1});
+}
+}catch(e){}
+}
+const tcr=a=>Math.floor(a*(site.rate||1)*(1+(+site.bonus||0)/100));
+function calc(){
+const a=+($("#ta")?.value||0),tc=$("#tc");
+if(tc)tc.textContent=a>0?("จะได้รับ "+tcr(a)+" เครดิต"):"";
+}
 function topupUI(){
-  const on=site.qr||site.pay,rate=site.rate||1,mn=site.min||0;
-  return `<div class="c"><h3>เติมเงิน</h3>${on?`<div class="mu" style="margin-bottom:12px">โอนตามข้อมูลด้านล่าง แล้วแนบสลิปเพื่อแจ้งโอน แอดมินตรวจสอบแล้วเครดิตจะเข้าบัญชี</div>${site.qr?`<img src="${site.qr}" style="display:block;max-width:220px;width:100%;margin:0 auto 12px;border-radius:10px;border:1px solid var(--bd)">`:""}${site.pay?`<div class="msg" style="margin:0 0 14px">${esc(site.pay)}</div>`:""}<div class="mu">อัตรา 1 บาท = ${rate} เครดิต${mn?` · ขั้นต่ำ ${mn} บาท`:""}</div><input id="ta" type="number" min="1" placeholder="จำนวนเงินที่โอน (บาท)" oninput="calc()"><div class="mu" id="tc"></div><div class="mu" style="margin-top:10px">แนบสลิปโอนเงิน</div><input id="ts" type="file" accept="image/*"><button class="b" id="tb" onclick="sendTopup()">แจ้งโอนเงิน</button>`:`<div class="mu">แอดมินยังไม่ได้เปิดระบบเติมเงิน</div>`}</div>`+(myTop.length?`<div class="c"><h3>ประวัติเติมเงินของฉัน</h3>${myTop.map(t=>`<div class="rw"><span>${t.amount} บาท → ${t.credits} เครดิต<br><span class="mu">${fd(t.at)}</span></span><span class="chip ${t.status}">${SN[t.status]}</span></div>`).join("")}</div>`:"")
+const on=site.qr||site.pay,rate=site.rate||1,mn=site.min||0;
+return `<div class="c"><h3>เติมเงิน</h3>${on?`<div class="mu" style="margin-bottom:12px">โอนเงินแล้วแนบสลิป</div>${site.qr?`<img src="${esc(site.qr)}" style="max-width:200px;border-radius:8px;margin-bottom:12px;display:block">`:""}${site.pay?`<div class="mu" style="white-space:pre-wrap">${esc(site.pay)}</div>`:""}<div class="mu">อัตรา 1 บาท = ${rate} เครดิต${mn?` · ขั้นต่ำ ${mn} บาท`:""}${+site.bonus?` · โบนัสเติมเงิน +${+site.bonus}%`:""}</div><input id="ta" type="number" min="1" placeholder="จำนวนเงิน" oninput="calc()"><div class="mu" id="tc" style="margin-top:4px"></div><div class="mu" style="margin-top:10px">แนบสลิป</div><input id="ts" type="file" accept="image/*"><button class="b" id="tb" onclick="sendTopup()" style="margin-top:12px">แจ้งโอน</button>`:`<div class="mu">ปิดระบบเติมเงิน</div>`}</div>`;
 }
+const topHist=()=>(myTop.length?`<div class="c"><h3>ประวัติเติมเงิน</h3>${myTop.map(t=>`<div class="rw"><div>${t.type=="angpao"?"อั่งเปา · ":""}${t.amount} บาท → ${t.credits} เครดิต<br><span class="mu">${fd(t.at)}</span></div><span class="chip ${t.status}">${SN[t.status]}</span></div>`).join("")}</div>`:"");
 async function sendTopup(){
-  const a=+$("#ta").value,f=$("#ts").files[0],mn=site.min||0;
-  if(!(a>0))return say("กรอกจำนวนเงิน");if(a<mn)return say("ขั้นต่ำ "+mn+" บาท");if(!f)return say("กรุณาแนบสลิปโอนเงิน");
-  const b=$("#tb");b.disabled=true;
-  try{let img=await pic(f,700);if(img.length>200000)img=await pic(f,480);if(img.length>200000)img=await pic(f,320);
-    const id="t"+Date.now()+Math.random().toString(36).slice(2,5);
-    await db.doc("slips/"+id).set({img});
-    await db.doc("topups/"+id).set({u:me.u,amount:a,credits:Math.floor(a*(site.rate||1)),status:"pending",at:Date.now()});
-    await load();render();say("ส่งแจ้งโอนแล้ว รอแอดมินตรวจสอบ",1)
-  }catch(e){b.disabled=false;say(ERR(e))}
+const fi=$("#ts"),a=+($("#ta")?.value||0),mn=site.min||0;
+if(!(a>0))return say("กรอกจำนวนเงิน");
+if(a<mn)return say("ขั้นต่ำ "+mn+" บาท");
+if(!fi||!fi.files[0])return say("แนบสลิป");
+const b=$("#tb");if(b)b.disabled=true;
+try{
+let img=await pic(fi.files[0],700);if(img.length>200000)img=await pic(fi.files[0],480);
+const id=Math.random().toString(36).substring(2,10),at=Date.now();
+await db.doc("topups/"+id).set({id,u:me.u,amount:a,credits:tcr(a),img,at,status:"pending"});
+await load();render();say("แจ้งโอนสำเร็จ รอแอดมินตรวจสอบ",1);
+}catch(e){if(b)b.disabled=false;say(ERR(e))}
 }
-const topRow=t=>`<div class="rw"><div><b>${esc(t.u)}</b> · ${t.amount} บาท → ${t.credits} เครดิต<br><span class="mu">${fd(t.at)}${t.by?" · โดย "+esc(t.by):""}</span></div><div class="ac"><button class="b s sm" onclick="showSlip('${t.id}')">สลิป</button>${t.status=="pending"?`<button class="b sm" onclick="decide('${t.id}',1)">อนุมัติ</button><button class="b d sm" onclick="decide('${t.id}',0)">ปฏิเสธ</button>`:`<span class="chip ${t.status}">${SN[t.status]}</span>`}</div></div>`;
-const adminTop=()=>{const P=allTop.filter(t=>t.status=="pending"),D=allTop.filter(t=>t.status!="pending");
-  return `<div class="c"><h3>รอตรวจสอบ (${P.length})</h3>${P.map(topRow).join("")||'<span class="mu">ไม่มีรายการ</span>'}</div><div class="c"><h3>ประวัติเติมเงิน</h3>${D.slice(0,50).map(topRow).join("")||'<span class="mu">ยังไม่มี</span>'}</div>`};
-const crOf=u=>(wals.find(w=>w.id==u)||{}).credits||0;
-const totOf=u=>allTop.filter(t=>t.u==u&&t.status=="approved").reduce((s,t)=>s+t.amount,0);
-const adminUsers=()=>{const L=[...accts].sort((a,b)=>(b.lastLogin||0)-(a.lastLogin||0));
-  return `<div class="c"><h3>สมาชิกทั้งหมด (${L.length})</h3><div class="mu">กดที่ชื่อเพื่อดูรายละเอียด</div>${L.map(a=>`<div class="rw" style="cursor:pointer" onclick="userDetail('${a.id}')"><div><b>${esc(a.id)}</b>${a.role=="admin"?' <span class="chip">แอดมิน</span>':""}<div class="mu">เข้าล่าสุด ${a.lastLogin?fd(a.lastLogin):"-"} · ${a.loginCount||0} ครั้ง</div></div><div style="text-align:right"><div>${crOf(a.id)} เครดิต</div><div class="mu">เติมแล้ว ${totOf(a.id)} บาท</div></div></div>`).join("")}</div>`};
-function userDetail(u){const L=logs.filter(l=>l.u==u).slice(0,15),T=allTop.filter(t=>t.u==u),a=accts.find(x=>x.id==u)||{};
-  $("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><div class="bd"><h3>${esc(u)}</h3><div class="mu">เครดิตคงเหลือ ${crOf(u)} · เติมแล้ว ${totOf(u)} บาท · เข้าสู่ระบบ ${a.loginCount||0} ครั้ง</div><div class="mu" style="margin:16px 0 4px"><b>ประวัติเข้าสู่ระบบ</b></div>${L.map(l=>`<div class="mu">${fd(l.at)}</div>`).join("")||'<div class="mu">-</div>'}<div class="mu" style="margin:16px 0 4px"><b>ประวัติเติมเงิน</b></div>${T.map(t=>`<div class="rw"><span class="mu">${fd(t.at)} ·${t.amount} บาท</span><span class="chip ${t.status}">${SN[t.status]}</span></div>`).join("")||'<div class="mu">-</div>'}<div style="margin-top:16px;text-align:right"><button class="b s" onclick="closeM()">ปิด</button></div></div></div></div>`}
-async function showSlip(id){
-  $("#mo").innerHTML=`<div class="ov"><div class="md"><div class="bd mu">กำลังโหลดสลิป...</div></div></div>`;
-  try{const s=await db.doc("slips/"+id).get();$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md">${s.exists?`<img class="big" style="aspect-ratio:auto;height:auto" src="${s.data().img}">`:'<div class="bd mu">ไม่พบสลิป</div>'}<div class="bd"><button class="b s" onclick="closeM()">ปิด</button></div></div></div>`}catch(e){closeM();say(ERR(e))}
+/* ===== ซองอั่งเปา TrueMoney (ฝั่งลูกค้า) ===== */
+const angpaoUI=()=>{
+if(!fon("ao")||!(site.aoPhone||site.aoApi))return "";
+const auto=site.aoMode=="auto"&&site.aoApi;
+return `<div class="c"><h3>เติมด้วยซองอั่งเปา TrueMoney</h3><div class="mu" style="margin-bottom:10px">${site.aoPhone?"สร้างซองอั่งเปาส่งมาที่เบอร์ "+esc(site.aoPhone)+" แล้ววางลิงก์ซองด้านล่าง":"วางลิงก์ซองอั่งเปาด้านล่าง"}${+site.bonus?" · โบนัส +"+(+site.bonus)+"%":""}</div><input id="ao" placeholder="https://gift.truemoney.com/campaign/?v=..." autocapitalize="none">${auto?"":'<input id="aa" type="number" min="1" placeholder="จำนวนเงินในซอง (บาท)">'}<button class="b" id="aob" onclick="sendAngpao()">${auto?"แลกซองทันที":"ส่งซองให้แอดมินตรวจสอบ"}</button></div>`;
+};
+async function sendAngpao(){
+const raw=($("#ao")?.value||"").trim(),a=+($("#aa")?.value||0);
+const m=raw.match(/[?&]v=([0-9A-Za-z]{10,})/)||raw.match(/^([0-9A-Za-z]{18,})$/);
+if(!m)return say("ลิงก์ซองอั่งเปาไม่ถูกต้อง");
+const code=m[1],auto=site.aoMode=="auto"&&site.aoApi;
+if(!auto&&!(a>0))return say("กรอกจำนวนเงินในซอง");
+if(!auto&&a<(site.min||0))return say("ขั้นต่ำ "+site.min+" บาท");
+if(busy)return;busy=true;
+const b=$("#aob");if(b)b.disabled=true;
+try{
+const cr=db.doc("angpao/"+code);
+if((await cr.get()).exists)throw new Error("ซองนี้ถูกส่งเข้าระบบแล้ว");
+const id=Math.random().toString(36).substring(2,10),at=Date.now(),link="https://gift.truemoney.com/campaign/?v="+code;
+if(auto){
+const res=await fetch(site.aoApi,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:site.aoPhone||"",link,code})});
+const d=await res.json().catch(()=>({}));
+const amt=+(d.amount??d.data?.my_ticket?.amount_baht??d.data?.voucher?.amount_baht??0);
+if(!(amt>0))throw new Error(d.message||"แลกซองไม่สำเร็จ");
+const cdt=tcr(amt);
+await cr.set({u:me.u,at,amount:amt});
+await db.doc("topups/"+id).set({id,u:me.u,amount:amt,credits:cdt,type:"angpao",link,code,at,status:"approved"});
+await addCredits(me.u,cdt);
+await load();render();say("เติมเงินสำเร็จ +"+cdt+" เครดิต",1);
+}else{
+await cr.set({u:me.u,at,amount:a});
+await db.doc("topups/"+id).set({id,u:me.u,amount:a,credits:tcr(a),type:"angpao",link,code,at,status:"pending"});
+await load();render();say("ส่งซองแล้ว รอแอดมินตรวจสอบ",1);
+}
+}catch(e){if(b)b.disabled=false;say(ERR(e))}
+finally{busy=false}
+}
+async function redeem(){
+const c=$("#k")?.value.trim().toUpperCase();
+if(!c)return say("กรอกคีย์");
+if(busy)return;busy=true;
+try{
+if(fon("cp")){
+const cr=db.doc("coupons/"+c),cs=await cr.get().catch(()=>null);
+if(cs&&cs.exists){
+const d=cs.data(),used=d.used||[];
+if(used.includes(me.u))return say("คุณใช้คูปองนี้แล้ว");
+if(d.max&&used.length>=d.max)return say("คูปองนี้ถูกใช้ครบแล้ว");
+await cr.update({used:[...used,me.u]});await addCredits(me.u,d.credits);
+await load();render();return say("ใช้คูปองสำเร็จ +"+d.credits+" เครดิต",1);
+}}
+const r=db.doc("keys/"+c),s=await r.get();
+if(!s.exists||s.data().used)return say("คีย์ไม่ถูกต้องหรือถูกใช้แล้ว");
+const val=s.data().credits;
+await r.update({used:true,usedBy:me.u,usedAt:Date.now()});
+await addCredits(me.u,val);
+await load();render();say("เติมเครดิตสำเร็จ +"+val+" เครดิต",1);
+}catch(e){say(ERR(e))}
+finally{busy=false}
+}
+const topRow=t=>`<div class="rw"><div><b>${esc(t.u)}</b>${t.type=="angpao"?' <span class="chip">อั่งเปา</span>':""} · ${t.amount} บาท → ${t.credits} เครดิต<br><span class="mu">${fd(t.at)}</span></div><div class="ac"><button class="b s sm" onclick="showSlip('${t.id}')">${t.type=="angpao"?"ลิงก์ซอง":"สลิป"}</button>${t.status=="pending"?`<button class="b sm" onclick="decide('${t.id}',1)">อนุมัติ</button><button class="b d sm" onclick="decide('${t.id}',0)">ปฏิเสธ</button>`:`<span class="chip ${t.status}">${SN[t.status]}</span>`}</div></div>`;
+const adminTop=()=>{
+const P=allTop.filter(t=>t.status=="pending"),D=allTop.filter(t=>t.status!="pending");
+return `<div class="c"><h3>รอตรวจสอบ (${P.length})</h3>${P.map(topRow).join("")||'<span class="mu">ไม่มี</span>'}</div><div class="c"><h3>ประวัติ</h3>${D.slice(0,50).map(topRow).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+};
+const crOf=u=>(wals.find(w=>w.id===u)||{}).credits||0;
+const totOf=u=>allTop.filter(t=>t.u===u&&t.status=="approved").reduce((s,t)=>s+t.amount,0);
+const adminUsers=()=>`<div class="c"><h3>สมาชิก (${accts.length})</h3><input id="usq" placeholder="ค้นหาชื่อผู้ใช้" value="${esc(usq)}" oninput="usq=this.value;usList()"><div id="usl"></div></div>`;
+function usList(){
+const e=$("#usl");if(!e)return;
+const L=[...accts].filter(a=>!usq||String(a.id).toLowerCase().includes(usq.toLowerCase())).sort((a,b)=>(b.lastLogin||0)-(a.lastLogin||0));
+e.innerHTML=L.map(a=>`<div class="rw" style="cursor:pointer" onclick="userDetail('${esc(a.id)}')"><div><b>${esc(a.id)}</b>${a.role=="admin"?' <span class="chip">แอดมิน</span>':""}${a.banned?' <span class="chip rejected">ระงับ</span>':""}<div class="mu">เข้าล่าสุด ${a.lastLogin?fd(a.lastLogin):"-"} · ${crOf(a.id)} เครดิต</div><div class="mu">เติม ${totOf(a.id)} บาท</div></div></div>`).join("")||'<span class="mu">ไม่พบ</span>';
+}
+function userDetail(u){
+const L=logs.filter(l=>l.u===u).slice(0,15),a=accts.find(x=>x.id==u)||{};
+const O=((wals.find(w=>w.id===u)||{}).orders||[]).slice().reverse().slice(0,10);
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><div class="bd"><h3>${esc(u)}${a.banned?' <span class="chip rejected">ระงับ</span>':""}</h3><div class="mu">เครดิต ${crOf(u)} · เติม ${totOf(u)} บาท</div><input id="adj" type="number" placeholder="จำนวนเครดิต" style="margin-top:12px"><div class="ac"><button class="b sm" onclick="adjCredit('${esc(u)}',1)">เพิ่ม</button><button class="b s sm" onclick="adjCredit('${esc(u)}',-1)">ลด</button>${u!=="admin"?`<button class="b d sm" onclick="toggleBan('${esc(u)}',${!a.banned})">${a.banned?"ปลดระงับ":"ระงับบัญชี"}</button>`:""}</div>${u!=="admin"?`<input id="npw" type="text" placeholder="ตั้งรหัสผ่านใหม่ให้สมาชิก" style="margin-top:14px"><button class="b s sm" onclick="setPw('${esc(u)}')">เปลี่ยนรหัสผ่าน</button>`:""}<div class="mu" style="margin:16px 0 4px"><b>ซื้อล่าสุด</b></div>${O.map(o=>`<div class="mu">${esc(o.name)} · ${o.price} เครดิต · ${fd(o.at)}</div>`).join("")||'<div class="mu">-</div>'}<div class="mu" style="margin:16px 0 4px"><b>ประวัติเข้าเว็บ</b></div>${L.map(l=>`<div class="mu">${fd(l.at)}</div>`).join("")||'<div class="mu">-</div>'}<div style="margin-top:16px;text-align:right"><button class="b s" onclick="closeM()">ปิด</button></div></div></div></div>`;
+}
+async function setPw(u){
+const p=$("#npw").value;
+if(p.length<4)return say("รหัสผ่านอย่างน้อย 4 ตัว");
+try{const salt=Math.random().toString(36).substring(2,10);await db.doc("accounts/"+u).update({hash:await sha(p,salt),salt});say("ตั้งรหัสผ่านใหม่แล้ว",1)}catch(e){say(ERR(e))}
+}
+function showSlip(id){
+const t=allTop.find(x=>x.id==id);if(!t)return say("ไม่พบรายการ");
+if(t.type=="angpao"){
+const ok=/^https:\/\/gift\.truemoney\.com\//.test(t.link||"");
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><div class="bd"><h3>ซองอั่งเปา</h3><div class="mu">${esc(t.u)} · ${t.amount} บาท</div><div class="msg" style="user-select:all">${esc(t.link||"")}</div><div class="r" style="margin-top:16px"><button class="b s" onclick="closeM()">ปิด</button>${ok?`<a class="b" href="${esc(t.link)}" target="_blank" rel="noopener">เปิดลิงก์</a>`:""}</div></div></div></div>`;
+return;
+}
+if(!t.img)return say("ไม่พบรูปสลิป");
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><img class="big" src="${esc(t.img)}"><div class="bd"><div class="r"><span><b>${esc(t.u)}</b> · ${t.amount} บาท</span><button class="b s" onclick="closeM()">ปิด</button></div></div></div></div>`;
 }
 async function decide(id,ok){
-  const t=allTop.find(x=>x.id==id);if(!t)return;
-  if(!await ask((ok?"อนุมัติ ":"ปฏิเสธ ")+t.u+" · "+t.amount+" บาท ("+t.credits+" เครดิต)?"))return;
-  try{const r=db.doc("topups/"+id),cur=await r.get();
-    if(!cur.exists||cur.data().status!="pending")return say("รายการนี้ถูกดำเนินการแล้ว");
-    await r.update({status:ok?"approved":"rejected",by:me.u,decidedAt:Date.now()});
-    if(ok){const w=db.doc("wallets/"+t.u),ws=await w.get(),c=ws.exists?(ws.data().credits||0):0;await w.set({credits:c+t.credits})}
-    await load();render();say(ok?"อนุมัติแล้ว เพิ่มเครดิตให้ "+t.u:"ปฏิเสธรายการแล้ว",1)
-  }catch(e){say(ERR(e))}
+if(busy)return;busy=true;
+try{
+const r=db.doc("topups/"+id),s=await r.get();
+if(!s.exists)return say("ไม่พบรายการ");
+const t=s.data();
+if(t.status!=="pending")return say("รายการนี้ถูกดำเนินการไปแล้ว");
+await r.update({status:ok?"approved":"rejected"});
+if(ok)await addCredits(t.u,t.credits);
+else if(t.type=="angpao"&&t.code){try{await db.doc("angpao/"+t.code).delete()}catch(e){}}
+await load();render();say(ok?"อนุมัติสำเร็จ":"ปฏิเสธสำเร็จ",ok);
+}catch(e){say(ERR(e))}
+finally{busy=false}
 }
-const siteCard=()=>`<div class="c"><h3>ตั้งค่าร้าน</h3><input id="sn" placeholder="ชื่อร้าน" value="${esc(site.name)}"><input id="si" placeholder="Instagram (ชื่อผู้ใช้)" value="${esc(site.ig)}"><input id="sl" placeholder="LINE ID" value="${esc(site.line)}"><div class="mu">โลโก้</div><input id="sf" type="file" accept="image/*"><button class="b" onclick="saveSite()">บันทึก</button></div>`;
-const payCard=()=>`<div class="c"><h3>การชำระเงิน (เติมเงิน)</h3><textarea id="pay" rows="3" placeholder="ข้อมูลรับเงิน เช่น พร้อมเพย์ 08x-xxx-xxxx ชื่อบัญชี ...">${esc(site.pay)}</textarea><div class="mu">QR รับเงิน</div><input id="qrf" type="file" accept="image/*">${site.qr?`<img src="${site.qr}" style="max-width:120px;border-radius:8px;border:1px solid var(--bd);margin:6px 0">`:""}<div class="mu">เครดิตที่ได้ต่อ 1 บาท</div><input id="rate" type="number" step="0.1" min="0.1" value="${site.rate||1}"><div class="mu">ขั้นต่ำ (บาท)</div><input id="mn" type="number" min="0" value="${site.min||0}"><button class="b" onclick="saveSite()">บันทึก</button></div>`;
-const storeCards=()=>`<div class="c"><h3>สร้างคีย์เครดิต</h3><input id="ka" type="number" value="10" placeholder="เครดิตต่อคีย์"><input id="kn" type="number" value="5" placeholder="จำนวนคีย์"><button class="b" onclick="genKeys()">สร้างคีย์</button><div class="msg" id="kout" style="display:none"></div></div>`+
-`<div class="c"><h3>เพิ่มสินค้า</h3><input id="pn" placeholder="ชื่อสินค้า"><textarea id="pd" rows="3" placeholder="รายละเอียดสินค้า"></textarea><input id="pp" type="number" value="1" placeholder="ราคา (เครดิต)"><textarea id="pm" rows="2" placeholder="ข้อความที่ลูกค้าได้หลังซื้อ"></textarea><div class="mu">รูปสินค้า</div><input id="pf" type="file" accept="image/*"><button class="b" onclick="addProd()">เพิ่มสินค้า</button></div>`+
-`<div class="c"><h3>สินค้าทั้งหมด</h3>${products.map(p=>`<div class="rw"><span>${esc(p.name)} ·${p.price}</span><button class="b d sm" onclick="delProd('${p.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+/* ===== เมนูแอดมิน: จัดกลุ่ม + ปุ่ม ☰ มุมขวาบน ===== */
+const GR=[
+["ภาพรวม",[["dash","สรุปร้าน"],["rep","รายงาน & อันดับ"],["orders","ออเดอร์"]]],
+["สินค้า",[["store","เพิ่ม / ลบสินค้า"],["pedit","แก้ไขสินค้า / สต็อก / ลดราคา"],["cats","หมวดหมู่"]]],
+["คีย์ & คูปอง",[["keys","สร้าง / คลังคีย์"],["coupon","คูปอง"]]],
+["การเงิน",[["topups","รายการเติมเงิน (สลิป / ซอง)"],["pay","ตั้งค่า QR + ซองอั่งเปา"],["promo","โปรโมชัน / โบนัส"],["gift","แจกเครดิต"]]],
+["สมาชิก & แชท",[["users","สมาชิก"],["chatA","แชทลูกค้า"],["chcfg","ตั้งค่าแชท / รูปแอดมิน"],["login","ตั้งค่าล็อกอิน Google / LINE"],["logs","ประวัติเข้าเว็บ"]]],
+["โฆษณา & แจ้งเตือน",[["ads","โฆษณา"],["notice","แจ้งเตือน / ประกาศ"]]],
+["หน้าตาเว็บ",[["theme","ธีม / สี / แอนิเมชัน"],["media","วิดีโอ / เพลง"],["feat","เปิด/ปิดฟีเจอร์ & ลูกเล่น"]]],
+["ระบบ",[["settings","ข้อมูลร้าน / โลโก้"],["data","สำรองข้อมูล"]]]
+];
+const subName=k=>{for(const [,L] of GR)for(const [a,n] of L)if(a==k)return n;return ""};
+function menuOpen(v){
+const pc=allTop.filter(t=>t.status=="pending").length,cu=chatsAll.some(c=>(c.ua||0)>(c.ur||0));
+const bdg=k=>k=="topups"&&pc?` <span class="er">(${pc})</span>`:k=="chatA"&&cu?' <span class="er">●</span>':"";
+const adm=v=="adm"&&me&&me.role=="admin";
+const logo=site.logo?`<img src="${esc(site.logo)}" style="height:30px;max-width:90px;object-fit:contain">`:"";
+const top=`<div class="dh">${logo}<b>${adm?"แอดมิน":"เมนูหลัก"}</b><button class="ib x" onclick="closeM()">${ico("close")}</button></div>`;
+let body="",foot="";
+if(adm){
+body=`<button class="di" onclick="menuOpen()"><span class="dic">‹</span><span>กลับเมนูหลัก</span></button>`+GR.map(([g,L])=>`<h4>${g}</h4>${L.map(([k,n])=>`<button class="mi ${tab=="admin"&&asub==k?"on":""}" onclick="goA('${k}')"><span>${n}</span><span>${bdg(k)}</span></button>`).join("")}`).join("")+`<h4>บัญชี</h4><button class="mi" onclick="goT('me')"><span>โปรไฟล์ & เปลี่ยนรหัสผ่านแอดมิน</span></button>`;
+}else{
+const T=tabsList(),nm=Object.fromEntries(T),has=k=>k in nm;
+const di=k=>k=="admin"?`<button class="di ${tab=="admin"?"on":""}" onclick="menuOpen('adm')"><span class="dic">${ico("shield")}</span><span>แอดมิน${aDot()?' <span class="er">●</span>':""}</span><span class="ml">›</span></button>`:`<button class="di ${tab==k?"on":""}" onclick="goT('${k}')"><span class="dic">${ico(TIC[k])}</span><span>${nm[k]}</span></button>`;
+const sec=(l,ks)=>{const x=ks.filter(has);return x.length?(l?`<h4>${l}</h4>`:"")+x.map(di).join(""):""};
+body=sec("",["shop"])+sec("บัญชีของฉัน",["key","code","hist","me"])+sec("ร้านค้า",["info"])+sec("หลังบ้าน",["admin"])+`<h4>อื่นๆ</h4><button class="di" onclick="themeToggle()"><span class="dic">${ico("moon")}</span><span>สลับโหมดมืด / สว่าง</span></button>`+(me?`<button class="di" onclick="closeM();logout()"><span class="dic">${ico("out")}</span><span>ออกจากระบบ</span></button>`:`<button class="di" onclick="goAuth('in')"><span class="dic">${ico("login")}</span><span>เข้าสู่ระบบ / สมัครสมาชิก</span></button>`);
+foot=`<div class="dq"><div style="position:relative"><input id="dq" class="fi" placeholder="ค้นหาสินค้า..." onkeydown="if(event.key=='Enter')drawerSearch()" style="padding-right:46px!important;border-radius:99px!important"><button class="eye" onclick="drawerSearch()">${ico("search")}</button></div></div>`;
+}
+$("#mo").innerHTML=`<div class="ov dr" onclick="if(event.target==this)closeM()"><div class="dw">${top}<div class="dsc">${body}</div>${foot}</div></div>`;
+}
+function drawerSearch(){qs=($("#dq")?.value||"").trim();curCat="";goT("shop")}
+function goT(k){if(!me&&!["shop","info"].includes(k)){closeM();return goAuth("in")}tab=k;showAuth=false;closeM();render();window.scrollTo(0,0)}
+function goA(k){asub=k;tab="admin";closeM();render();window.scrollTo(0,0)}
 function adminHTML(){
-  const pc=allTop.filter(t=>t.status=="pending").length;
-  const subs=[["topups","เติมเงิน"+(pc?" ("+pc+")":"")],["users","สมาชิก"],["settings","ตั้งค่าร้าน"],["store","สินค้า & คีย์"]];
-  let h=`<nav>${subs.map(([k,n])=>`<button class="${asub==k?'on':''}" onclick="asub='${k}';render()">${n}</button>`).join("")}</nav>`;
-  if(asub=="topups")h+=adminTop();if(asub=="users")h+=adminUsers();
-  if(asub=="settings")h+=siteCard()+payCard()+themeUI();if(asub=="store")h+=storeCards();
-  return h
+if(!subName(asub))asub="dash";
+let h=`<div class="r" style="margin-bottom:16px"><h3 style="font-size:17px;font-weight:500;margin:0">${esc(subName(asub))}</h3><button class="b s sm" onclick="menuOpen('adm')">☰ เมนูแอดมิน</button></div>`;
+if(asub=="settings")h+=`<div class="c"><h3>ข้อมูลร้าน</h3><label class="mu">ชื่อร้าน</label><input id="sn" value="${esc(site.name||"")}" placeholder="${DEF_NAME}"><label class="mu">Instagram</label><input id="si" value="${esc(site.ig||"")}"><label class="mu">LINE ID</label><input id="sl" value="${esc(site.line||"")}"><label class="mu">โลโก้ ${site.logo?"(มีอยู่แล้ว)":""}</label><input id="sf" type="file" accept="image/*"><label class="cl">ลบพื้นหลังโลโก้อัตโนมัติ<input type="checkbox" id="rmbg" style="width:20px;height:20px;margin:0" checked></label><button class="b" onclick="saveSite()" style="margin-top:10px">บันทึก</button></div>`;
+if(asub=="theme")h+=themeUI();
+if(asub=="topups")h+=adminTop();
+if(asub=="users")h+=adminUsers();
+if(asub=="dash")h+=dashUI();
+if(asub=="rep")h+=repUI();
+if(asub=="orders")h+=ordersUI();
+if(asub=="cats")h+=catsUI();
+if(asub=="media")h+=mediaUI();
+if(asub=="ads")h+=adsUI();
+if(asub=="notice")h+=noticeUI();
+if(asub=="chatA")h+=chatAdmin();
+if(asub=="coupon")h+=couponUI();
+if(asub=="feat")h+=featUI();
+if(asub=="data")h+=dataUI();
+if(asub=="keys")h+=keysUI();
+if(asub=="pedit")h+=peditUI();
+if(asub=="gift")h+=giftUI();
+if(asub=="pay")h+=payUI();
+if(asub=="chcfg")h+=chcfgUI();
+if(asub=="login")h+=loginUI();
+if(asub=="promo")h+=promoUI();
+if(asub=="logs")h+=logsUI();
+if(asub=="store")h+=`<div class="c"><h3>เพิ่มสินค้า</h3><label class="mu">ชื่อสินค้า</label><input id="pp"><label class="mu">ราคา (เครดิต)</label><input id="pr" type="number"><label class="mu">รูปภาพ URL</label><input id="pi"><label class="mu">หรืออัปโหลดรูป</label><input id="pif" type="file" accept="image/*"><label class="mu">หมวดหมู่</label><select id="pcat" style="max-width:100%"><option value="">ไม่มี</option>${cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select><label class="mu">คำอธิบาย</label><textarea id="pd"></textarea><label class="mu">ข้อความหลังซื้อ (Secret Message)</label><textarea id="pm"></textarea><button class="b" onclick="addProd()" style="margin-top:10px">เพิ่มสินค้า</button></div><div class="c"><h3>สินค้าทั้งหมด</h3>${products.map(p=>`<div class="rw"><span><b>${esc(p.name)}</b> · ${p.price} เครดิต</span><button class="b d sm" onclick="delProd('${p.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+return h;
 }
 async function saveSite(){
-  try{const d={...site,...readTheme(),name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim(),pay:$("#pay").value.trim(),rate:+$("#rate").value||1,min:+$("#mn").value||0,logo:site.logo||"",qr:site.qr||""};
-  const f=$("#sf").files[0];if(f)d.logo=await pic(f,240);
-  const q=$("#qrf").files[0];if(q)d.qr=await pic(q,520);
-  await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว ทุกคนจะเห็นการเปลี่ยนแปลง",1)}catch(e){say(ERR(e))}
+try{
+const d={...site,name:$("#sn").value.trim(),ig:$("#si").value.trim(),line:$("#sl").value.trim()};
+const lf=$("#sf").files[0];
+if(lf)d.logo=await pic(lf,300,$("#rmbg").checked);
+await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว",1);
+}catch(e){say(ERR(e))}
 }
+const payUI=()=>`<div class="c"><h3>QR Code / บัญชีรับโอน</h3><div class="mu" style="margin-bottom:8px">ลูกค้าโอนแล้วแนบสลิป · รายการไปรอที่เมนู "รายการเติมเงิน"</div><label class="mu">ข้อมูลบัญชีรับโอน</label><textarea id="pyi">${esc(site.pay||"")}</textarea><label class="mu">รูป QR ${site.qr?"(มีอยู่แล้ว)":""}</label><input id="qf" type="file" accept="image/*"><label class="mu">อัตรา (1 บาท = กี่เครดิต)</label><input id="rt" type="number" step="any" value="${site.rate||1}"><label class="mu">ขั้นต่ำ (บาท)</label><input id="mn" type="number" value="${site.min||0}"><div class="ac" style="margin-top:8px"><button class="b" onclick="savePay()">บันทึก QR / อัตรา</button>${site.qr?'<button class="b d" onclick="sv({qr:\'\'})">ลบ QR</button>':""}</div></div>${aoUI()}`;
+async function savePay(){
+try{
+const d={...site,pay:$("#pyi").value.trim(),rate:+$("#rt").value||1,min:+$("#mn").value||0};
+const qf=$("#qf").files[0];if(qf)d.qr=await pic(qf,500);
+await db.doc("settings/site").set(d);await load();render();say("บันทึกแล้ว",1);
+}catch(e){say(ERR(e))}
+}
+/* ===== โปรไฟล์ / รหัสผ่าน ===== */
+async function verifyPw(u,pw){
+if(u==="admin"){
+const s=await db.doc("accounts/admin").get(),d=s.exists?s.data():null;
+if(d&&d.custom)return d.hash===await sha(pw,d.salt);
+return pw===ADMIN_PW;
+}
+const s=await db.doc("accounts/"+u).get();
+if(!s.exists)return false;
+const d=s.data();return d.hash===await sha(pw,d.salt||"chin");
+}
+const avatarH=(src,z)=>src?`<img src="${esc(src)}" style="width:${z}px;height:${z}px;border-radius:50%;object-fit:cover">`:`<div style="width:${z}px;height:${z}px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-weight:500">${esc(String(me&&me.u||"?")[0].toUpperCase())}</div>`;
+const profileUI=()=>{const a=myAcc||{};return `<div class="c"><h3>โปรไฟล์</h3><div class="mu">ไม่บังคับ ไม่ใส่ก็ใช้งานได้ปกติ</div><div style="display:flex;align-items:center;gap:14px;margin:14px 0">${avatarH(a.avatar,56)}<div><b>${esc(a.nick||me.u)}</b><div class="mu">@${esc(me.u)}${me.role=="admin"?" · แอดมิน":""}</div></div></div><label class="mu">ชื่อที่แสดง</label><input id="pnick" maxlength="30" value="${esc(a.nick||"")}" placeholder="ไม่ใส่ก็ได้"><label class="mu">รูปโปรไฟล์</label><input id="pav" type="file" accept="image/*"><div class="ac" style="margin-top:8px"><button class="b" onclick="saveProfile()">บันทึกโปรไฟล์</button>${a.avatar?'<button class="b s" onclick="delAvatar()">ลบรูป</button>':""}</div></div>${a.provider?"":`<div class="c"><h3>เปลี่ยนรหัสผ่าน</h3><div class="mu">ไม่เปลี่ยนก็ได้</div><input id="op" type="password" placeholder="รหัสผ่านเดิม"><input id="np" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)"><input id="np2" type="password" placeholder="ยืนยันรหัสผ่านใหม่"><button class="b" onclick="changePw()">เปลี่ยนรหัสผ่าน</button></div>`}`};
+async function saveProfile(){
+try{
+const d={nick:$("#pnick").value.trim().slice(0,30)},f=$("#pav").files[0];
+if(f)d.avatar=await pic(f,160);
+await db.doc("accounts/"+me.u).update(d);await load();render();say("บันทึกโปรไฟล์แล้ว",1);
+}catch(e){say(ERR(e))}
+}
+async function delAvatar(){
+try{await db.doc("accounts/"+me.u).update({avatar:""});await load();render();say("ลบรูปแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function changePw(){
+const o=$("#op").value,n=$("#np").value,n2=$("#np2").value;
+if(!o)return say("กรอกรหัสผ่านเดิม");
+if(n.length<4)return say("รหัสผ่านใหม่อย่างน้อย 4 ตัว");
+if(n!==n2)return say("รหัสผ่านใหม่ไม่ตรงกัน");
+try{
+if(!await verifyPw(me.u,o))return say("รหัสผ่านเดิมไม่ถูกต้อง");
+const salt=Math.random().toString(36).substring(2,10);
+await db.doc("accounts/"+me.u).update({hash:await sha(n,salt),salt,...(me.u==="admin"?{custom:true}:{})});
+["op","np","np2"].forEach(i=>{const e=$("#"+i);if(e)e.value=""});
+say("เปลี่ยนรหัสผ่านแล้ว",1);
+}catch(e){say(ERR(e))}
+}
+const contactH=()=>{
+const ig=site.ig?`<a class="b s" target="_blank" rel="noopener" href="https://instagram.com/${encodeURIComponent(site.ig.replace(/^@/,""))}">Instagram</a>`:"";
+const ln=site.line?`<a class="b s" target="_blank" rel="noopener" href="https://line.me/ti/p/~${encodeURIComponent(site.line.replace(/^@/,""))}">LINE</a>`:"";
+return ig||ln?`<div class="c"><h3>ติดต่อแอดมิน</h3><div class="ac" style="margin-top:8px">${ig}${ln}</div></div>`:"";
+};
+/* ===== ปุ่มแชทวงกลม + หน้าต่างแชท ===== */
+const chBg=()=>HX.test(site.chBg||"")?site.chBg:"#ffffff";
+const chatAv=z=>`<div style="flex:none;width:${z}px;height:${z}px;border-radius:50%;background:${chBg()};border:1px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center">${site.chImg?`<img src="${esc(site.chImg)}" style="width:100%;height:100%;object-fit:contain;object-position:bottom">`:'<span style="font-size:'+Math.round(z*.42)+'px">💬</span>'}</div>`;
+const chatFab=pv=>{
+const dot=!pv&&myChat&&(myChat.aa||0)>(myChat.ar||0);
+return `<div ${pv?"":'id="cfab" onclick="chatToggle()"'} style="${pv?"position:relative;":"position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:45;"}width:62px;height:62px;cursor:pointer;filter:drop-shadow(0 6px 14px rgba(0,0,0,.22))">${chatAv(62)}${dot?'<span style="position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--er);border:2px solid var(--bg)"></span>':""}</div>`;
+};
+function fabInit(){
+let f=$("#cfabw");
+const on=fon("chat")&&!(me&&me.role=="admin")&&!showAuth&&!fon("mt");
+if(!on){if(f)f.remove();chatClose();return}
+if(!f){f=document.createElement("div");f.id="cfabw";document.body.appendChild(f)}
+f.innerHTML=chatFab(false);
+if(!fabT)fabT=setInterval(async()=>{if(!me||me.role=="admin"||$("#chp"))return;try{const s=await cref(me.u).get();myChat=s.exists?s.data():null;fabInit()}catch(e){}},15000);
+}
+function chatToggle(){
+if(!me){pend=null;goAuth("in");return say("กรุณาเข้าสู่ระบบก่อนแชท")}
+if($("#chp"))return chatClose();
+const p=document.createElement("div");p.id="chp";
+p.innerHTML=`<div class="chh">${chatAv(38)}<div style="flex:1;min-width:0"><b style="font-weight:500">${esc(site.chName||site.name||DEF_NAME)}</b><div class="mu" style="font-size:12px">แอดมินร้าน</div></div><button class="b s sm" onclick="chatClose()">✕</button></div>${chatBox()}`;
+document.body.appendChild(p);chatOpen();
+}
+function chatClose(){
+const p=$("#chp");if(!p)return;
+p.remove();clearInterval(chatT);chatT=null;
+}
+const loginUI=()=>`<div class="c"><h3>เข้าสู่ระบบด้วย Google</h3>${ck2("gon","เปิดปุ่ม Google",!!site.gOn)}<div class="mu">ต้องเปิด Google ที่ Firebase Console → Authentication → Sign-in method และเพิ่มโดเมนเว็บของคุณใน Authorized domains</div></div><div class="c"><h3>เข้าสู่ระบบด้วย LINE</h3>${ck2("lon","เปิดปุ่ม LINE",!!site.lnOn)}<label class="mu">LIFF ID</label><input id="liff" value="${esc(site.liffId||"")}" placeholder="1234567890-AbCdEfGh"><div class="mu">สร้าง LINE Login channel → เพิ่ม LIFF app → ตั้ง Endpoint URL เป็นลิงก์เว็บนี้ → นำ LIFF ID มาใส่ที่นี่</div></div><button class="b" onclick="sv({gOn:$('#gon').checked,lnOn:$('#lon').checked,liffId:$('#liff').value.trim()})">บันทึก</button>`;
+const chcfgUI=()=>`<div class="c"><h3>รูปปุ่มแชท (วงกลม)</h3><div class="mu">อัปโหลดรูปหน้าของคุณ ระบบจะลบพื้นหลังของรูปให้ (ได้ผลดีกับพื้นหลังสีเรียบ) ส่วนวงกลมด้านหลังยังอยู่เหมือนเดิม และเลือกสีวงกลมได้</div><div style="display:flex;justify-content:center;margin:16px 0">${chatFab(true)}</div><input id="chf" type="file" accept="image/*">${ck2("chrm","ลบพื้นหลังรูปอัตโนมัติ",true)}<label class="cl">สีวงกลม<input type="color" id="chc" value="${chBg()}"></label></div><div class="c"><h3>ข้อความในแชท</h3><label class="mu">ชื่อที่แสดงบนหน้าแชท</label><input id="chn" value="${esc(site.chName||"")}" placeholder="${esc(site.name||DEF_NAME)}"><label class="mu">ข้อความต้อนรับอัตโนมัติ</label><textarea id="chh">${esc(site.chHello||"")}</textarea><div class="mu">เว้นว่าง = ใช้ข้อความมาตรฐาน "ยินดีต้อนรับครับ มีอะไรให้สอบถามได้เลย" · เปิด/ปิดแชทได้ที่เมนู "เปิด/ปิดฟีเจอร์"</div><div class="ac" style="margin-top:12px"><button class="b" onclick="saveChat()">บันทึก</button>${site.chImg?'<button class="b d" onclick="sv({chImg:\'\'})">ลบรูป</button>':""}</div></div>`;
+async function saveChat(){
+try{
+const d={chName:$("#chn").value.trim(),chHello:$("#chh").value.trim(),chBg:$("#chc").value},f=$("#chf").files[0];
+if(f)d.chImg=await pic(f,240,$("#chrm").checked);
+await sv(d);
+}catch(e){say(ERR(e))}
+}
+async function saveTheme(){
+try{await db.doc("settings/site").set({...site,...readTheme()});await load();render();say("บันทึกธีมแล้ว",1)}catch(e){say(ERR(e))}
+}
+const seg=()=>Math.random().toString(36).substring(2,6).toUpperCase().padEnd(4,"X");
 async function genKeys(){
-  const a=+$("#ka").value,n=Math.min(+$("#kn").value,50),out=[];
-  if(!(a>0&&n>0))return say("กรอกจำนวนให้ถูกต้อง");
-  const seg=()=>Math.random().toString(36).slice(2,6).toUpperCase().padEnd(4,"X");
-  try{for(let i=0;i<n;i++){const c=seg()+"-"+seg()+"-"+seg();await db.doc("keys/"+c).set({credits:a,used:false});out.push(c)}
-  const o=$("#kout");o.style.display="block";o.textContent=out.join("\n");say("สร้างแล้ว "+n+" คีย์",1)}catch(e){say(ERR(e))}
+const a=+($("#ka").value||0),n=+($("#kn").value||1);
+if(!(a>0&&n>0))return say("กรอกข้อมูลให้ถูกต้อง");
+const out=[];
+try{
+for(let i=0;i<n;i++){const c=seg()+"-"+seg()+"-"+seg();await db.doc("keys/"+c).set({credits:a,used:false});out.push(c)}
+const o=$("#kout");o.style.display="block";o.textContent=out.join("\n");say("สร้างแล้ว "+n+" คีย์",1);
+}catch(e){say(ERR(e))}
 }
 async function addProd(){
-  const name=$("#pn").value.trim(),price=+$("#pp").value;
-  if(!name||!(price>0))return say("กรอกชื่อและราคา");
-  try{const f=$("#pf").files[0],img=f?await pic(f,560):"";
-  await db.collection("products").add({name,desc:$("#pd").value,price,message:$("#pm").value||"ขอบคุณที่ซื้อสินค้า",img});
-  await load();render();say("เพิ่มสินค้าแล้ว ทุกคนจะเห็นทันที",1)}catch(e){say(ERR(e))}
+const name=$("#pp").value.trim(),price=+($("#pr").value||0);
+if(!name||!(price>0))return say("กรอกชื่อและราคา");
+try{
+const img=await mediaFrom("pi","pif",600);await db.collection("products").add({name,desc:$("#pd").value.trim(),price,message:$("#pm").value.trim()||"ขอบคุณ",img,cat:$("#pcat").value});
+await load();render();say("เพิ่มสินค้าแล้ว",1);
+}catch(e){say(ERR(e))}
 }
-async function delProd(id){if(!await ask("ลบสินค้านี้?"))return;try{await db.doc("products/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
+async function delProd(id){
+if(!await ask("ลบสินค้านี้?"))return;
+try{await db.doc("products/"+id).delete();await load();render()}catch(e){say(ERR(e))}
+}
 
+const FT={cat:"หมวดหมู่สินค้า",sr:"ค้นหาสินค้า",bgv:"วิดีโอพื้นหลัง + โลโก้",mus:"เพลงพื้นหลัง",ads:"โฆษณา (แบนเนอร์/ป๊อปอัป)",nt:"แจ้งเตือน + แถบประกาศ",chat:"แชทกับร้าน",fx:"เอฟเฟกต์/ลูกเล่น",cp:"คูปอง",hi:"ประวัติสั่งซื้อ",ab:"หน้าข้อมูลร้าน",ao:"ซองอั่งเปา TrueMoney",mt:"โหมดปิดปรับปรุง"};
+const FDEF=["cat","sr","chat","cp","hi","ab","ao"];
+const fon=(k,t=site)=>(t.f&&k in t.f)?!!t.f[k]:FDEF.includes(k);
+const gl=async q=>(await q.get().catch(()=>({docs:[]}))).docs.map(x=>({id:x.id,...x.data()}));
+const cref=u=>db.doc("chats/"+u);
+const mediaFrom=async(u,f,m)=>{const x=$("#"+f)?.files[0];return x?await pic(x,m):($("#"+u)?.value.trim()||"")};
+async function sv(o){try{await db.doc("settings/site").set({...site,...o});await load();render();say("บันทึกแล้ว",1)}catch(e){say(ERR(e))}}
+const rg2=(id,l,v,a,b)=>`<label class="cl">${l}<span class="rv"><input type="range" id="${id}" min="${a}" max="${b}" value="${v}" oninput="$('#${id}v').textContent=this.value"><b id="${id}v">${v}</b></span></label>`;
+const ck2=(id,l,on)=>`<label class="cl">${l}<input type="checkbox" id="${id}" style="width:20px;height:20px;margin:0" ${on?"checked":""}></label>`;
+function applyMedia(t){
+const bv=fon("bgv",t)&&t.bgVideo;
+document.body.classList.toggle("hv",!!bv);
+let v=$("#bgv"),d=$("#bgd"),l=$("#bgl");
+if(!bv){[v,d,l].forEach(x=>x&&x.remove())}
+else{
+if(!v){v=document.createElement("video");v.id="bgv";v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;document.body.prepend(v);d=document.createElement("div");d.id="bgd";document.body.prepend(d)}
+if(v.dataset.s!==t.bgVideo){v.src=t.bgVideo;v.dataset.s=t.bgVideo;v.play().catch(()=>{})}
+d.style.opacity=(t.bgDim??35)/100;
+const sl=t.logo&&t.bgLogo!==false;
+if(sl&&!l){l=document.createElement("img");l.id="bgl";document.body.appendChild(l)}
+if(!sl&&l)l.remove();
+if(l){l.src=t.logo;l.style.opacity=(t.bgLa??30)/100}
+}
+let a=$("#aud"),mb=$("#mb");
+if(!(fon("mus",t)&&t.music)){if(a){a.pause();a.remove()}if(mb)mb.remove();return}
+if(!a){a=document.createElement("audio");a.id="aud";a.loop=true;document.body.appendChild(a)}
+if(a.dataset.s!==t.music){a.src=t.music;a.dataset.s=t.music}
+a.volume=(t.mVol??60)/100;
+if(!mb){mb=document.createElement("button");mb.id="mb";mb.className="b s";mb.textContent="♪";document.body.appendChild(mb);
+mb.onclick=()=>{const x=$("#aud");if(x.paused){x.play().catch(()=>{});x.dataset.m=""}else{x.pause();x.dataset.m="1"}setTimeout(()=>mb.textContent=x.paused?"♪":"❚❚",150)}}
+}
+document.addEventListener("pointerdown",e=>{
+const a=$("#aud");
+if(a&&a.paused&&!a.dataset.m)a.play().then(()=>{const b=$("#mb");if(b)b.textContent="❚❚"}).catch(()=>{});
+if(fon("fx")&&site.fxt){const s=document.createElement("span");s.className="sk";s.textContent="✨";s.style.left=e.clientX+"px";s.style.top=e.clientY+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),700)}
+});
+function fxInit(){
+let f=$("#fx");const em=site.fxs;
+if(!fon("fx")||!em||em=="none"){if(f)f.remove();return}
+if(f&&f.dataset.e===em)return;
+if(f)f.remove();
+f=document.createElement("div");f.id="fx";f.dataset.e=em;
+for(let i=0;i<22;i++){const s=document.createElement("span");s.textContent=em;s.style.cssText=`left:${Math.random()*100}%;font-size:${12+Math.random()*16}px;animation-duration:${6+Math.random()*8}s;animation-delay:-${Math.random()*10}s`;f.appendChild(s)}
+document.body.appendChild(f);
+}
+function confetti(){
+if(!fon("fx")||site.fxc===false)return;
+const f=document.createElement("div");f.className="cf";
+for(let i=0;i<70;i++){const s=document.createElement("i");s.style.cssText=`left:${Math.random()*100}%;background:hsl(${Math.random()*360},80%,60%);animation-duration:${1.5+Math.random()*1.5}s;animation-delay:${Math.random()*.4}s`;f.appendChild(s)}
+document.body.appendChild(f);setTimeout(()=>f.remove(),3500);
+}
+function afterR(){
+fxInit();fabInit();navInit();
+if(!adShown&&fon("ads")&&!showAuth&&!$("#mo").innerHTML){
+const P=ads.filter(a=>a.on!==false&&a.type=="popup");
+if(P.length){adShown=true;const a=P[Math.floor(Math.random()*P.length)];
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md">${a.img?`<img class="big" src="${esc(a.img)}">`:""}<div class="bd"><h3>${esc(a.title)}</h3><div class="r" style="margin-top:14px"><button class="b s" onclick="closeM()">ปิด</button>${a.link?`<a class="b" href="${esc(a.link)}" target="_blank" rel="noopener">ดูเพิ่มเติม</a>`:""}</div></div></div></div>`}
+}
+}
+const noticeBar=()=>fon("nt")&&site.notice?`<div class="nb"><span>${esc(site.notice)}</span></div>`:"";
+const unseen=()=>notes.filter(n=>n.at>(+LS.get("nseen")||0)).length;
+const bell=()=>fon("nt")?`<button class="b sm s" onclick="showNotes()">🔔${unseen()?`<sup class="er">${unseen()}</sup>`:""}</button>`:"";
+function showNotes(){
+$("#mo").innerHTML=`<div class="ov" onclick="if(event.target==this)closeM()"><div class="md"><div class="bd"><h3>การแจ้งเตือน</h3>${notes.slice(0,30).map(n=>`<div class="rw"><div><b>${esc(n.t)}</b><div class="mu" style="white-space:pre-wrap">${esc(n.x||"")}</div><div class="mu">${fd(n.at)}</div></div></div>`).join("")||'<div class="mu">ไม่มีการแจ้งเตือน</div>'}<div style="margin-top:16px;text-align:right"><button class="b s" onclick="closeM();render()">ปิด</button></div></div></div></div>`;
+LS.set("nseen",Date.now());
+}
+function setCat(id){curCat=id;render()}
+function shopHTML(){
+let h="";
+const bn=ads.filter(a=>a.on!==false&&a.type!="popup");
+if(fon("ads")&&bn.length)h+=`<div class="bn">${bn.map(a=>`<a ${a.link?`href="${esc(a.link)}" target="_blank" rel="noopener"`:""}>${a.img?`<img src="${esc(a.img)}">`:""}<span>${esc(a.title)}</span></a>`).join("")}</div>`;
+if(fon("cat")&&cats.length)h+=`<div class="cats"><div class="ct ${curCat?"":"on"}" onclick="setCat('')"><div class="cm">★</div>ทั้งหมด</div>${cats.map(c=>`<div class="ct ${curCat==c.id?"on":""}" onclick="setCat('${c.id}')"><div class="cm">${c.video?`<video src="${esc(c.video)}" autoplay muted loop playsinline></video>`:c.img?`<img src="${esc(c.img)}">`:"•"}</div>${esc(c.name)}</div>`).join("")}</div>`;
+if(fon("sr"))h+=`<input id="sq" placeholder="ค้นหาสินค้า" value="${esc(qs)}" oninput="qs=this.value;grid()">`;
+return h+'<div id="gr"></div>';
+}
+function grid(){
+const e=$("#gr");if(!e)return;
+const L=products.filter(p=>p.hide!==true&&(!curCat||p.cat==curCat)&&(!qs||(p.name||"").toLowerCase().includes(qs.toLowerCase())));
+e.innerHTML=L.length?`<div class="g">${L.map(p=>`<div class="p" onclick="detail('${p.id}')"><div class="im">${p.img?`<img src="${esc(p.img)}" loading="lazy">`:""}</div><div class="t"><b>${esc(p.name)}</b><span class="mu">${priceH(p)}${oos(p)?" · หมด":""}</span></div></div>`).join("")}</div>`:'<div class="c mu">ไม่พบสินค้า</div>';
+}
+const bub=m=>`<div class="bu ${m.f==(me.role=="admin"?"a":"u")?"me":""}">${esc(m.t)}<small>${fd(m.at)}</small></div>`;
+const chatBox=()=>`<div id="cm" class="cx"></div><div class="r"><input id="ci" placeholder="พิมพ์ข้อความ" onkeydown="if(event.key=='Enter')sendChat()" style="margin:0"><button class="b" onclick="sendChat()">ส่ง</button></div>`;
+const chatHTML=()=>`<div class="c"><h3>แชทกับร้าน</h3>${chatBox()}</div>`;
+function chatAdmin(){
+const L=[...chatsAll].sort((a,b)=>(b.ua||0)-(a.ua||0));
+return `<div class="c"><h3>แชทลูกค้า (${L.length})</h3>${L.map(c=>`<div class="rw" style="cursor:pointer" onclick="chatSel='${esc(c.id)}';render()"><b>${esc(c.id)}${(c.ua||0)>(c.ur||0)?' <span class="er">●</span>':""}</b><span class="mu">${c.ua?fd(c.ua):""}</span></div>`).join("")||'<span class="mu">ยังไม่มีแชท</span>'}</div>`+(chatSel?`<div class="c"><h3>${esc(chatSel)}</h3>${chatBox()}</div>`:"");
+}
+const chatU=()=>me.role=="admin"?chatSel:me.u;
+async function chatOpen(){
+clearInterval(chatT);
+const u=chatU();if(!u)return;
+const draw=async()=>{
+try{
+const s=await cref(u).get(),d=s.exists?s.data():{m:[]},e=$("#cm");if(!e)return;
+const end=e.scrollTop+e.clientHeight>=e.scrollHeight-30;
+const hello=me.role!="admin"?`<div class="bu">${esc(site.chHello||"ยินดีต้อนรับครับ 😊 มีอะไรให้สอบถามได้เลยนะครับ")}<small>ข้อความอัตโนมัติ</small></div>`:"";
+e.innerHTML=hello+((d.m||[]).map(bub).join("")||(hello?"":'<div class="mu">ยังไม่มีข้อความ</div>'));
+if(end||!e.dataset.i){e.scrollTop=e.scrollHeight;e.dataset.i=1}
+const adm=me.role=="admin",k=adm?"ur":"ar",last=adm?(d.ua||0):(d.aa||0);
+if((d[k]||0)<last){await cref(u).update({[k]:Date.now()});if(!adm){myChat={...d,ar:Date.now()};fabInit()}}
+}catch(e){}
+};
+chatT=setInterval(draw,4000);await draw();
+}
+async function sendChat(){
+const i=$("#ci"),t=i.value.trim(),u=chatU();if(!t||!u)return;
+i.value="";
+try{
+const r=cref(u),s=await r.get(),d=s.exists?s.data():{u,m:[]},adm=me.role=="admin";
+const m=[...(d.m||[]),{f:adm?"a":"u",t:t.slice(0,500),at:Date.now()}].slice(-100);
+await r.set({...d,u,m,[adm?"aa":"ua"]:Date.now()});
+await chatOpen();
+}catch(e){say(ERR(e))}
+}
+async function adjCredit(u,sg){
+const n=Math.abs(+$("#adj").value||0);if(!n)return say("กรอกจำนวน");
+try{await addCredits(u,sg*n);await load();render();userDetail(u);say("ปรับเครดิตแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function toggleBan(u,b){
+try{await db.doc("accounts/"+u).update({banned:b});await load();render();userDetail(u);say(b?"ระงับแล้ว":"ปลดระงับแล้ว",1)}catch(e){say(ERR(e))}
+}
+const allOrders=()=>wals.flatMap(w=>(w.orders||[]).map(o=>({...o,u:w.id}))).sort((a,b)=>b.at-a.at);
+function dashUI(){
+const ap=allTop.filter(t=>t.status=="approved"),rev=ap.reduce((s,t)=>s+t.amount,0),rd=ap.filter(t=>t.at>Date.now()-864e5).reduce((s,t)=>s+t.amount,0);
+const ord=allOrders(),sold=ord.reduce((s,o)=>s+o.price,0),cir=wals.reduce((s,w)=>s+(w.credits||0),0);
+const cd=(n,v)=>`<div class="c"><div class="mu">${n}</div><h3 style="font-size:22px">${v}</h3></div>`;
+return `<div class="g" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">${cd("สมาชิก",accts.length)}${cd("สินค้า",products.length)}${cd("รายได้รวม (บาท)",rev)}${cd("รายได้ 24 ชม.",rd)}${cd("ออเดอร์",ord.length)}${cd("เครดิตที่ขายไป",sold)}${cd("เครดิตคงเหลือ",cir)}${cd("รอตรวจสลิป",allTop.filter(t=>t.status=="pending").length)}${cd("คีย์ที่ยังไม่ใช้",keysAll.filter(k=>!k.used).length)}${cd("สินค้าหมดสต็อก",products.filter(oos).length)}</div>`;
+}
+const repUI=()=>{
+const ap=allTop.filter(t=>t.status=="approved"),days=[];
+for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const s=+d,e=s+864e5;days.push([d.toLocaleDateString("th-TH",{day:"numeric",month:"short"}),ap.filter(t=>t.at>=s&&t.at<e).reduce((x,t)=>x+t.amount,0)])}
+const mx=Math.max(1,...days.map(x=>x[1]));
+const ord=allOrders(),bp={},bu={},tp={};
+ord.forEach(o=>{bp[o.name]=(bp[o.name]||0)+1;bu[o.u]=(bu[o.u]||0)+o.price});
+ap.forEach(t=>{tp[t.u]=(tp[t.u]||0)+t.amount});
+const top=(o,f)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v],i)=>`<div class="rw"><span>${i+1}. ${esc(k)}</span><b>${f(v)}</b></div>`).join("")||'<span class="mu">ยังไม่มีข้อมูล</span>';
+return `<div class="c"><h3>รายได้ 7 วันล่าสุด (บาท)</h3>${days.map(([n,v])=>`<div class="rw" style="gap:12px;flex-wrap:nowrap"><span class="mu" style="width:60px">${n}</span><div style="flex:1;height:8px;background:var(--bd);border-radius:4px;overflow:hidden"><div style="height:100%;width:${v/mx*100}%;background:var(--ac)"></div></div><b style="min-width:50px;text-align:right">${v}</b></div>`).join("")}</div><div class="c"><h3>สินค้าขายดี</h3>${top(bp,v=>v+" ชิ้น")}</div><div class="c"><h3>ลูกค้าใช้จ่ายสูงสุด</h3>${top(bu,v=>v+" เครดิต")}</div><div class="c"><h3>ลูกค้าเติมเงินสูงสุด</h3>${top(tp,v=>v+" บาท")}</div>`;
+};
+const logsUI=()=>`<div class="c"><h3>ประวัติเข้าเว็บล่าสุด</h3>${logs.slice(0,100).map(l=>`<div class="rw"><b>${esc(l.u)}</b><span class="mu">${fd(l.at)}</span></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+const promoUI=()=>`<div class="c"><h3>โปรโมชัน</h3><label class="mu">เครดิตต้อนรับสมาชิกใหม่</label><input id="pw1" type="number" min="0" value="${+site.welcome||0}"><label class="mu">โบนัสเติมเงิน (%) เช่น 10 = ได้เครดิตเพิ่ม 10%</label><input id="pb1" type="number" min="0" value="${+site.bonus||0}"><button class="b" onclick="sv({welcome:+$('#pw1').value||0,bonus:+$('#pb1').value||0})">บันทึก</button></div>`;
+const aoUI=()=>`<div class="c"><h3>ซองอั่งเปา TrueMoney</h3><div class="mu" style="margin-bottom:8px">เปิด/ปิดฟีเจอร์ได้ที่เมนู "เปิด/ปิดฟีเจอร์" · ต้องใส่เบอร์หรือ API อย่างใดอย่างหนึ่งจึงจะแสดงให้ลูกค้า</div><label class="mu">เบอร์ TrueMoney Wallet ที่รับซอง</label><input id="aop" inputmode="numeric" value="${esc(site.aoPhone||"")}"><label class="cl">โหมด<select id="aom"><option value="manual"${site.aoMode!="auto"?" selected":""}>แอดมินตรวจเอง</option><option value="auto"${site.aoMode=="auto"?" selected":""}>ออโต้ (ผ่าน API ของคุณ)</option></select></label><label class="mu">API URL แลกซอง (เฉพาะโหมดออโต้)</label><input id="aoa" placeholder="https://your-server.com/redeem" value="${esc(site.aoApi||"")}"><div class="mu">โหมดออโต้: ระบบส่ง POST JSON {phone, link, code} ไปที่ API ของคุณ และต้องตอบกลับ {"amount": จำนวนบาท} หรือ {"message": "ข้อผิดพลาด"} (เบราว์เซอร์เรียก TrueMoney ตรงๆ ไม่ได้ ต้องมีเซิร์ฟเวอร์ของคุณเป็นตัวกลาง)</div><button class="b" style="margin-top:12px" onclick="sv({aoPhone:$('#aop').value.trim(),aoMode:$('#aom').value,aoApi:$('#aoa').value.trim()})">บันทึก</button></div>`;
+const ordersUI=()=>`<div class="c"><h3>ออเดอร์ล่าสุด</h3>${allOrders().slice(0,100).map(o=>`<div class="rw"><div><b>${esc(o.name)}</b> · ${esc(o.u)}<div class="mu">${fd(o.at)}</div></div><b>${o.price} เครดิต</b></div>`).join("")||'<span class="mu">ยังไม่มี</span>'}</div>`;
+const catsUI=()=>`<div class="c"><h3>เพิ่มหมวดหมู่</h3><input id="cn" placeholder="ชื่อหมวดหมู่"><label class="mu">รูปภาพ URL</label><input id="ci2"><label class="mu">หรืออัปโหลดรูป</label><input id="cf" type="file" accept="image/*"><label class="mu">วิดีโอ URL (.mp4 ไม่บังคับ)</label><input id="cv"><button class="b" onclick="addCat()" style="margin-top:10px">เพิ่ม</button></div><div class="c"><h3>หมวดหมู่ทั้งหมด</h3>${cats.map(c=>`<div class="rw"><span>${esc(c.name)}${c.video?" 🎬":""}</span><button class="b d sm" onclick="delCat('${c.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+async function addCat(){
+const name=$("#cn").value.trim();if(!name)return say("กรอกชื่อหมวดหมู่");
+try{await db.collection("cats").add({name,img:await mediaFrom("ci2","cf",400),video:$("#cv").value.trim()});await load();render();say("เพิ่มแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function delCat(id){if(!await ask("ลบหมวดหมู่นี้?"))return;try{await db.doc("cats/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
+const mediaUI=()=>{const t=site;return `<div class="c"><h3>วิดีโอพื้นหลัง</h3><div class="mu">ใส่ลิงก์ไฟล์วิดีโอตรง (.mp4) แล้วเปิดฟีเจอร์ในเมนู "เปิด/ปิดฟีเจอร์"</div><input id="bv" placeholder="https://.../video.mp4" value="${esc(t.bgVideo||"")}">${ck2("bl","แสดงโลโก้บนวิดีโอ",t.bgLogo!==false)}${rg2("bo","ความมืดวิดีโอ (%)",t.bgDim??35,0,90)}${rg2("bla","ความชัดโลโก้ (%)",t.bgLa??30,0,100)}</div><div class="c"><h3>เพลงพื้นหลัง</h3><input id="ms" placeholder="https://.../song.mp3" value="${esc(t.music||"")}">${rg2("mv","ระดับเสียง",t.mVol??60,0,100)}<div class="mu">ผู้ใช้ต้องแตะหน้าจอหนึ่งครั้งก่อน เพลงถึงจะเริ่มเล่น</div></div><button class="b" onclick="sv({bgVideo:$('#bv').value.trim(),bgLogo:$('#bl').checked,bgDim:+$('#bo').value,bgLa:+$('#bla').value,music:$('#ms').value.trim(),mVol:+$('#mv').value})">บันทึก</button>`};
+const adsUI=()=>`<div class="c"><h3>เพิ่มโฆษณา</h3><input id="at" placeholder="หัวข้อ/ข้อความ"><label class="mu">รูปภาพ URL</label><input id="ai"><label class="mu">หรืออัปโหลดรูป</label><input id="af" type="file" accept="image/*"><label class="mu">ลิงก์เมื่อกด (ไม่บังคับ)</label><input id="al"><label class="cl">รูปแบบ<select id="ay"><option value="banner">แบนเนอร์หน้าร้าน</option><option value="popup">ป๊อปอัปตอนเปิดเว็บ</option></select></label><button class="b" onclick="addAd()" style="margin-top:10px">เพิ่มโฆษณา</button></div><div class="c"><h3>โฆษณาทั้งหมด</h3>${ads.map(a=>`<div class="rw"><span><b>${esc(a.title)}</b> <span class="chip">${a.type=="popup"?"ป๊อปอัป":"แบนเนอร์"}</span></span><span class="ac"><button class="b s sm" onclick="togAd('${a.id}',${a.on===false})">${a.on===false?"เปิด":"ปิด"}</button><button class="b d sm" onclick="delAd('${a.id}')">ลบ</button></span></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+async function addAd(){
+const title=$("#at").value.trim();if(!title)return say("กรอกหัวข้อ");
+try{await db.collection("ads").add({title,img:await mediaFrom("ai","af",800),link:$("#al").value.trim(),type:$("#ay").value,on:true});await load();render();say("เพิ่มแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function togAd(id,on){try{await db.doc("ads/"+id).update({on});await load();render()}catch(e){say(ERR(e))}}
+async function delAd(id){if(!await ask("ลบโฆษณานี้?"))return;try{await db.doc("ads/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
+const noticeUI=()=>`<div class="c"><h3>แถบประกาศวิ่ง</h3><input id="nt1" placeholder="ข้อความประกาศ" value="${esc(site.notice||"")}"><h3 style="margin-top:14px">หน้าข้อมูลร้าน / กฎ</h3><textarea id="ab1" placeholder="รายละเอียดร้าน กฎ การรับประกัน">${esc(site.about||"")}</textarea><button class="b" onclick="sv({notice:$('#nt1').value.trim(),about:$('#ab1').value.trim()})">บันทึก</button></div><div class="c"><h3>ส่งการแจ้งเตือนถึงทุกคน</h3><input id="nn" placeholder="หัวข้อ"><textarea id="nx" placeholder="รายละเอียด"></textarea><button class="b" onclick="sendNote()">ส่งแจ้งเตือน</button></div><div class="c"><h3>ที่ส่งไปแล้ว</h3>${notes.map(n=>`<div class="rw"><span><b>${esc(n.t)}</b><div class="mu">${fd(n.at)}</div></span><button class="b d sm" onclick="delNote('${n.id}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+async function sendNote(){
+const t=$("#nn").value.trim();if(!t)return say("กรอกหัวข้อ");
+try{await db.collection("notes").add({t,x:$("#nx").value.trim(),at:Date.now()});await load();render();say("ส่งแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function delNote(id){try{await db.doc("notes/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
+const couponUI=()=>`<div class="c"><h3>สร้างคูปอง</h3><input id="kc" placeholder="โค้ด เช่น WELCOME" autocapitalize="characters"><input id="kv" type="number" placeholder="เครดิตที่ได้"><input id="km" type="number" placeholder="จำกัดจำนวนคน (เว้นว่าง = ไม่จำกัด)"><button class="b" onclick="addCoupon()">สร้างคูปอง</button></div><div class="c"><h3>คูปองทั้งหมด</h3>${coupons.map(c=>`<div class="rw"><span><b>${esc(c.id)}</b> · ${c.credits} เครดิต<div class="mu">ใช้แล้ว ${(c.used||[]).length}${c.max?"/"+c.max:""}</div></span><button class="b d sm" onclick="delCoupon('${esc(c.id)}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+async function addCoupon(){
+const c=$("#kc").value.trim().toUpperCase(),v=+$("#kv").value,m=+$("#km").value||0;
+if(!/^[A-Z0-9_-]+$/.test(c)||!(v>0))return say("กรอกโค้ด (A-Z 0-9) และเครดิต");
+try{await db.doc("coupons/"+c).set({credits:v,max:m,used:[]});await load();render();say("สร้างคูปองแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function delCoupon(id){if(!await ask("ลบคูปองนี้?"))return;try{await db.doc("coupons/"+id).delete();await load();render()}catch(e){say(ERR(e))}}
+function featUI(){
+const fx=[["none","ปิด"],["❄️","หิมะ"],["🌸","ซากุระ"],["✨","ประกาย"],["🍂","ใบไม้"],["💖","หัวใจ"],["💸","เงิน"]];
+return `<div class="c"><h3>เปิด/ปิดฟีเจอร์</h3>${Object.entries(FT).map(([k,n])=>ck2("f_"+k,n,fon(k))).join("")}</div><div class="c"><h3>ลูกเล่น</h3>${sel("fxs","เอฟเฟกต์ตกลงมา",site.fxs||"none",fx)}${ck2("fxc","พลุกระดาษตอนซื้อสำเร็จ",site.fxc!==false)}${ck2("fxt","ประกายเวลาแตะ",!!site.fxt)}<input id="mtx" placeholder="ข้อความตอนปิดปรับปรุง" value="${esc(site.mtx||"")}"></div><button class="b" onclick="saveFeat()">บันทึก</button>`;
+}
+function saveFeat(){
+const f={};Object.keys(FT).forEach(k=>f[k]=$("#f_"+k).checked);
+sv({f,fxs:$("#fxs").value,fxc:$("#fxc").checked,fxt:$("#fxt").checked,mtx:$("#mtx").value.trim()});
+}
+const dataUI=()=>`<div class="c"><h3>สำรองข้อมูล</h3><div class="mu" style="margin-bottom:12px">ดาวน์โหลดข้อมูลร้านทั้งหมดเป็นไฟล์ JSON (มีรหัสผ่านแบบแฮชของสมาชิก เก็บให้ปลอดภัย)</div><button class="b" onclick="exportData()">ดาวน์โหลดไฟล์สำรอง</button></div>`;
+function exportData(){
+const o={site,products,cats,ads,notes,coupons,keys:keysAll,accounts:accts,wallets:wals,topups:allTop.map(({img,...r})=>r)};
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));a.download="chincode-backup.json";a.click();
+}
+/* ===== คลังคีย์ / แก้ไขสินค้า / แจกเครดิต ===== */
+const keysUI=()=>{
+const U=keysAll.filter(k=>!k.used),S=keysAll.filter(k=>k.used);
+return `<div class="c"><h3>สร้างคีย์เติมเงิน</h3><label class="mu">จำนวนเครดิตต่อคีย์</label><input id="ka" type="number"><label class="mu">จำนวนคีย์</label><input id="kn" type="number" value="1"><button class="b" onclick="genKeys()" style="margin-top:10px">สร้างคีย์</button><div id="kout" class="msg" style="display:none;margin-top:12px;user-select:all"></div></div><div class="c"><div class="r"><h3>คีย์ที่ยังไม่ใช้ (${U.length})</h3><button class="b s sm" onclick="copyKeys()">คัดลอกทั้งหมด</button></div>${U.slice(0,100).map(k=>`<div class="rw"><span><b>${esc(k.id)}</b> · ${k.credits} เครดิต</span><button class="b d sm" onclick="delKey('${esc(k.id)}')">ลบ</button></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div><div class="c"><div class="r"><h3>ใช้แล้ว (${S.length})</h3><button class="b d sm" onclick="clearUsed()">ล้างทั้งหมด</button></div>${S.slice(0,100).map(k=>`<div class="rw"><span>${esc(k.id)} · ${esc(k.usedBy||"")}<div class="mu">${k.usedAt?fd(k.usedAt):""}</div></span><b>${k.credits}</b></div>`).join("")||'<span class="mu">ไม่มี</span>'}</div>`;
+};
+async function copyKeys(){
+const t=keysAll.filter(k=>!k.used).map(k=>k.id).join("\n");
+if(!t)return say("ไม่มีคีย์");
+try{await navigator.clipboard.writeText(t);say("คัดลอกแล้ว",1)}catch(e){say("คัดลอกไม่สำเร็จ")}
+}
+async function clearUsed(){
+const U=keysAll.filter(k=>k.used);if(!U.length)return say("ไม่มีคีย์ที่ใช้แล้ว");
+if(!await ask("ลบคีย์ที่ใช้แล้ว "+U.length+" รายการ?"))return;
+try{for(const k of U)await db.doc("keys/"+k.id).delete();await load();render();say("ลบแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function delKey(id){
+if(!await ask("ลบคีย์นี้?"))return;
+try{await db.doc("keys/"+id).delete();await load();render()}catch(e){say(ERR(e))}
+}
+const peditUI=()=>`<div class="c"><h3>แก้ไขสินค้า</h3><div class="mu">ราคาลด: ใส่ 0 = ไม่ลด · สต็อก: เว้นว่าง = ไม่จำกัด</div></div>`+products.map(p=>`<div class="c"><label class="mu">ชื่อสินค้า</label><input id="pn_${p.id}" value="${esc(p.name)}"><label class="mu">ราคา (เครดิต)</label><input id="pq_${p.id}" type="number" value="${p.price}"><label class="mu">ราคาลด (เครดิต)</label><input id="ps_${p.id}" type="number" value="${p.sale||0}"><label class="mu">สต็อก (ขายไปแล้ว ${p.sold||0})</label><input id="pk_${p.id}" type="number" value="${p.stock!=null?p.stock:""}"><label class="cl">หมวดหมู่<select id="pc_${p.id}"><option value="">ไม่มี</option>${cats.map(c=>`<option value="${c.id}"${p.cat==c.id?" selected":""}>${esc(c.name)}</option>`).join("")}</select></label><label class="mu">คำอธิบาย</label><textarea id="pd_${p.id}">${esc(p.desc||"")}</textarea><label class="mu">ข้อความหลังซื้อ</label><textarea id="pm_${p.id}">${esc(p.message||"")}</textarea><div class="ac" style="margin-top:8px"><button class="b sm" onclick="saveProd('${p.id}')">บันทึก</button><button class="b s sm" onclick="hideProd('${p.id}',${p.hide!==true})">${p.hide?"แสดงสินค้า":"ซ่อนสินค้า"}</button><button class="b d sm" onclick="delProd('${p.id}')">ลบ</button>${p.hide?' <span class="chip">ซ่อนอยู่</span>':""}</div></div>`).join("")||'<div class="c mu">ไม่มีสินค้า</div>';
+async function saveProd(id){
+const price=+$("#pq_"+id).value;
+if(!(price>0))return say("ราคาไม่ถูกต้อง");
+const sale=+$("#ps_"+id).value||0,sk=$("#pk_"+id).value.trim();
+try{await db.doc("products/"+id).update({name:$("#pn_"+id).value.trim(),price,sale,stock:sk===""?null:Math.max(0,+sk),cat:$("#pc_"+id).value,desc:$("#pd_"+id).value.trim(),message:$("#pm_"+id).value.trim()||"ขอบคุณ"});await load();render();say("บันทึกแล้ว",1)}catch(e){say(ERR(e))}
+}
+async function hideProd(id,h){
+try{await db.doc("products/"+id).update({hide:h});await load();render();say(h?"ซ่อนแล้ว":"แสดงแล้ว",1)}catch(e){say(ERR(e))}
+}
+const giftUI=()=>`<div class="c"><h3>แจกเครดิตให้สมาชิกทุกคน</h3><input id="gv" type="number" placeholder="จำนวนเครดิตต่อคน"><input id="gn" placeholder="หัวข้อแจ้งเตือน (ไม่บังคับ)"><button class="b" onclick="giftAll()">แจกเครดิต</button></div>`;
+async function giftAll(){
+const n=+$("#gv").value;
+if(!(n>0))return say("กรอกจำนวน");
+if(!await ask("แจก "+n+" เครดิตให้ทุกคน?"))return;
+try{
+for(const w of wals){if(w.id!=="admin")await addCredits(w.id,n)}
+const t=$("#gn").value.trim();
+if(t)await db.collection("notes").add({t,x:"คุณได้รับ "+n+" เครดิต",at:Date.now()});
+await load();render();say("แจกเครดิตแล้ว",1);
+}catch(e){say(ERR(e))}
+}
+/* ===== จบส่วนเพิ่มเติม ===== */
 function mkDb(){
-  const K="shopdb";let M={};
-  const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M},wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
-  const o=rd();
-  o["accounts/admin"]=ADMIN;
-  if(!o["settings/site"])o["settings/site"]={name:"ร้านเครดิต",ig:"",line:"",logo:""};
-  wr(o);
-  const snap=(p,d)=>({id:p.split("/").pop(),exists:!!d,data:()=>d});
-  const Q=(c,f=[],ord=null,lim=0)=>({
-    where:(a,op,v)=>Q(c,[...f,[a,op,v]],ord,lim),orderBy:(a,d="asc")=>Q(c,f,[a,d],lim),limit:n=>Q(c,f,ord,n),
-    get:async()=>{const o=rd(),n=c.split("/").length+1;let l=Object.keys(o).filter(k=>k.startsWith(c+"/")&&k.split("/").length==n).map(k=>snap(k,o[k]));
-      f.forEach(([a,op,v])=>{l=l.filter(d=>{const x=d.data()[a];return op=="=="?x===v:op=="!="?x!==v:true})});
-      if(ord)l.sort((p,q)=>{const a=p.data()[ord[0]],b=q.data()[ord[0]];return(a>b?1:a<b?-1:0)*(ord[1]=="desc"?-1:1)});
-      if(lim)l=l.slice(0,lim);return{docs:l}},
-    add:async x=>{const id=Math.random().toString(36).slice(2,10),o=rd();o[c+"/"+id]=x;wr(o);return{id}}});
-  return{
-    doc:p=>({
-      get:async()=>snap(p,rd()[p]),
-      set:async x=>{const o=rd();o[p]=x;wr(o)},
-      update:async x=>{const o=rd();o[p]={...(o[p]||{}),...x};wr(o)},
-      delete:async()=>{const o=rd();delete o[p];wr(o)}}),
-    collection:c=>Q(c)
-  }
+const K="shopdb";let M={};
+const rd=()=>{try{const v=localStorage.getItem(K);if(v)return JSON.parse(v)}catch(e){}return M};
+const wr=o=>{M=o;try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}};
+const o=rd();if(!o["accounts/admin"])o["accounts/admin"]=ADMIN;if(!o["settings/site"])o["settings/site"]={name:DEF_NAME,rate:1,min:0};wr(o);
+const snap=(p,d)=>({id:p.split("/").pop(),exists:!!d,data:()=>d});
+const Q=(c,f=[],ord=null,lim=0)=>({
+where:(a,op,v)=>Q(c,[...f,[a,op,v]],ord,lim),
+orderBy:(a,d="asc")=>Q(c,f,[a,d],lim),
+limit:n=>Q(c,f,ord,n),
+get:async()=>{
+const o=rd(),n=c.split("/").length+1;
+let l=Object.keys(o).filter(k=>k.startsWith(c+"/")&&k.split("/").length===n).map(k=>snap(k,o[k]));
+f.forEach(([a,op,v])=>{l=l.filter(d=>d.data()[a]===v)});
+if(ord)l.sort((p,q)=>{const a=p.data()[ord[0]],b=q.data()[ord[0]];return(a>b?1:a<b?-1:0)*(ord[1]=="desc"?-1:1)});
+if(lim)l=l.slice(0,lim);
+return{docs:l};
+},
+add:async x=>{const id=Math.random().toString(36).slice(2,10),o=rd();o[c+"/"+id]=x;wr(o);return{id}}
+});
+return{
+doc:p=>({
+get:async()=>snap(p,rd()[p]),
+set:async x=>{const o=rd();o[p]=x;wr(o)},
+update:async x=>{const o=rd();o[p]={...(o[p]||{}),...x};wr(o)},
+delete:async()=>{const o=rd();delete o[p];wr(o)}
+}),
+collection:c=>Q(c)
+};
 }
-const ADMIN = { hash: "7a8bc6bbfa43d8fb8488e0b6be91e779a9557452d3a95f573fc06ef0841ff51e", role: "admin", salt: "chin" };
-const useCap=async n=>{try{return(window.claude&&window.claude.use)?await window.claude.use(n):null}catch(e){return null}};
-
 (async()=>{
-  try{
-    const real=await useCap("db");
-    try{const us=await useCap("user");if(us&&real){const w=await us.can("data.write");if(w===false)ro=true}}catch(e){}
-
-    let fire=null;
-    try{
-      if(!real&&window.firebase&&CFG.apiKey&&CFG.projectId){
-        firebase.initializeApp(CFG);
-        fire=firebase.firestore();
-      }
-    }catch(e){console.error("Firebase init error:",e)}
-
-    db=real||fire||mkDb();
-    const shared=!!(real||fire);
-    if(!shared)console.warn("ยังไม่ได้ตั้งค่า Firebase: ข้อมูลเก็บในเครื่องนี้เท่านั้น");
-
-    if(shared){
-      try{
-        await db.doc("accounts/admin").set(ADMIN);
-        const st=await db.doc("settings/site").get();
-        if(!st.exists&&!ro)await db.doc("settings/site").set({name:"ร้านเครดิต",ig:"",line:"",logo:""});
-      }catch(e){console.error(e)}
-    }
-    let s;try{s=await db.doc("settings/site").get()}catch(e){s={exists:false}}
-    site=s.exists?s.data():{};
-    applyTheme(site);
-    splash(site);
-    try{
-      const ss=JSON.parse(LS.get("sess")||"null");
-      if(ss){
-        const a=await db.doc("accounts/"+ss.u).get();
-        if(a.exists&&a.data().hash==ss.hash){me={u:ss.u,role:a.data().role};await load()}
-      }
-    }catch(e){console.error(e)}
-    if(!me)await load();
-    render();
-    if(shared){live();liveWallet()}
-  }catch(e){
-    console.error(e);
-    $("#app").innerHTML=`<div class="c er">โหลดไม่สำเร็จ: ${esc(e.message||e.code)}</div>`;
-  }
+try{
+let fire=null;
+try{if(window.firebase&&CFG.apiKey){firebase.initializeApp(CFG);fire=firebase.firestore()}}catch(e){}
+db=fire||mkDb();
+if(fire){
+try{const a=await db.doc("accounts/admin").get();if(!a.exists)await db.doc("accounts/admin").set(ADMIN)}catch(e){}
+}
+let s;try{s=await db.doc("settings/site").get()}catch(e){s={exists:false}}
+site=s.exists?s.data():{};applyTheme(site);splash(site);
+try{
+const ss=JSON.parse(LS.get("sess")||"null");
+if(ss&&ss.u){
+if(ss.u==="admin"){me={u:"admin",role:"admin"}}
+else{const a=await db.doc("accounts/"+ss.u).get();if(a.exists)me={u:ss.u,role:a.data().role||"user"}}
+}
+}catch(e){}
+await load();render();
+if(fire)liveWallet();
+try{if(!me&&site.lnOn&&site.liffId&&/[?&](liffClientId|liff\.state|code)=/.test(location.search)){await lineSdk();await liff.init({liffId:site.liffId});if(liff.isLoggedIn())await lineFinish();history.replaceState(null,"",location.pathname)}}catch(e){}
+}catch(e){
+console.error(e);
+document.querySelector("#app").innerHTML='<div class="c er">โหลดไม่สำเร็จ: '+esc(e.message||e.code)+'</div>';
+}
 })();
-</script></body></html>
+</script>
+
+<!-- ===== Chincode PATCH: วางก่อน </body> (ต่อจาก </script> ตัวสุดท้าย) ===== -->
+<style>
+html{scroll-behavior:smooth}
+#app{animation:pgin .45s ease both}
+@keyframes pgin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.rv0{opacity:0;transform:translateY(26px) scale(.97);transition:opacity .55s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.rv0.in{opacity:1;transform:none}
+.b,.p,.ct,.ib,#bn button,.di,.mi{transition:transform .15s ease,opacity .2s,background .2s}
+.b:active,.p:active,.ct:active,.ib:active,#bn button:active{transform:scale(.94)}
+.p .im{transition:transform .25s,box-shadow .25s}.p:hover .im{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.15)}
+.md{animation:pop .32s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(14px)}to{opacity:1;transform:none}}
+/* แชท: รูปเฉยๆ ไม่มีกรอบ */
+#cfab>div,#chp .chh>div:first-child{border:0!important;background:transparent!important;border-radius:0!important}
+#cfab{filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+/* หมวดหมู่แบบการ์ดใหญ่ */
+body.catbig .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;overflow:visible}
+body.catbig .ct{width:auto;font-size:14px}
+body.catbig .ct .cm{width:100%;height:110px;border-radius:16px;margin-bottom:6px}
+/* โปรไฟล์อยู่ตรงกลาง */
+.ctr .c{text-align:center}.ctr .c input{text-align:center}.ctr .ac{justify-content:center}
+.ctr .c>div[style*="display:flex"]{flex-direction:column;justify-content:center;text-align:center}
+/* การ์ดสถิติ / ติดต่อ */
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.st div{border:1px solid var(--bd);border-radius:14px;padding:14px 6px;text-align:center}
+.st b{display:block;font-size:20px;font-weight:600}.st span{font-size:12px;color:var(--mu)}
+.ctl{display:flex;gap:14px;justify-content:center;margin:26px 0}
+.ctl a{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.15);transition:transform .2s}
+.ctl a:active{transform:scale(.92)}
+.emb{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;padding:13px;border-radius:14px}
+</style>
+<script>
+(()=>{
+const SVG_MAIL='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';
+const SVG_LINE='<svg width="34" height="34" viewBox="0 0 48 48"><path fill="#fff" d="M24 7C13.5 7 5 13.8 5 22.2c0 7.5 6.7 13.8 15.7 14.9.6.1 1.4.4 1.6.9.2.5.1 1.2.1 1.7l-.3 1.6c-.1.5-.4 1.9 1.7 1 2-.9 11-6.5 15-11.1 2.8-3 4.2-6.1 4.2-9C43 13.8 34.5 7 24 7z"/></svg>';
+let hvT=0;
+/* ===== ยืนยันว่าเป็นมนุษย์ ===== */
+window.human=()=>new Promise(res=>{
+if(Date.now()-hvT<6e5)return res(1);
+const a=2+Math.floor(Math.random()*8),b=2+Math.floor(Math.random()*8),key=site.tsKey;
+const m=document.createElement("div");m.className="ov";m.style.zIndex=90;
+m.innerHTML=`<div class="md"><div class="bd" style="text-align:center"><h3>ยืนยันว่าคุณเป็นมนุษย์</h3>${key?'<div id="tsw" style="min-height:70px;display:flex;justify-content:center"></div>':`<p class="mu">${a} + ${b} = ?</p><input id="hq" class="fi" inputmode="numeric" style="text-align:center">`}<div class="r" style="margin-top:14px"><button class="b s" id="hn">ยกเลิก</button><button class="b" id="hy">ยืนยัน</button></div></div></div>`;
+document.body.appendChild(m);let tok="";
+if(key){const go=()=>turnstile.render("#tsw",{sitekey:key,callback:t=>tok=t});
+if(window.turnstile)go();else{const s=document.createElement("script");s.src="https://challenges.cloudflare.com/turnstile/v0/api.js";s.onload=go;document.head.appendChild(s)}}
+m.querySelector("#hn").onclick=()=>{m.remove();res(0)};
+m.querySelector("#hy").onclick=()=>{const ok=key?!!tok:+m.querySelector("#hq").value===a+b;if(!ok)return say("ยืนยันไม่ผ่าน");hvT=Date.now();m.remove();res(1)};
+});
+const _ds=doSignup;doSignup=async function(){if(await human())return _ds()};
+const _dl=doLogin;doLogin=async function(){if(await human())return _dl()};
+/* ===== เลือกบัญชีอีเมล (Google account chooser) ===== */
+googleLogin=async function(){
+try{
+if(!window.firebase||!firebase.auth||!firebase.apps.length)return say("ระบบอีเมลยังไม่พร้อมใช้งาน");
+if(!await human())return;
+const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});
+const u=(await firebase.auth().signInWithPopup(p)).user;
+await socialLogin("g_"+u.uid,{provider:"google",email:(u.email||"").toLowerCase(),nick:u.displayName||"",avatar:u.photoURL||""});
+}catch(e){say(e&&e.code=="auth/popup-closed-by-user"?"ยกเลิกการเข้าสู่ระบบ":ERR(e))}
+};
+const _am=authModal;authModal=function(){
+_am();const bd=document.querySelector("#mo .md .bd");
+if(bd&&!bd.querySelector(".emb"))bd.querySelector(".mu").insertAdjacentHTML("afterend",`<button class="b s emb" onclick="googleLogin()">${SVG_MAIL}<span>เลือกบัญชีอีเมลของคุณ</span></button>`);
+};
+/* ===== ผู้ดูแล: เข้าเมนูรับเงินด้วยรหัสแอดมิน ===== */
+window.adminGate=async()=>{
+const m=document.createElement("div");m.className="ov";m.style.zIndex=90;
+m.innerHTML=`<div class="md"><div class="bd"><h3>ใส่รหัสแอดมิน</h3><input id="agp" type="password" class="fi"><div class="r" style="margin-top:14px"><button class="b s" id="agn">ยกเลิก</button><button class="b" id="agy">เข้า</button></div></div></div>`;
+document.body.appendChild(m);
+m.querySelector("#agn").onclick=()=>m.remove();
+m.querySelector("#agy").onclick=async()=>{
+try{if(await verifyPw(me.u,m.querySelector("#agp").value)){m.remove();goA("topups")}else say("รหัสไม่ถูกต้อง")}catch(e){say(ERR(e))}};
+};
+/* ===== หมวดหมู่: ใส่สินค้า ===== */
+window.catPick=()=>{
+const id=$("#cas").value,e=$("#cap");if(!e)return;
+e.innerHTML=products.map(p=>`<label class="cl">${esc(p.name)}<input type="checkbox" class="cpk" value="${p.id}" style="width:20px;height:20px;margin:0" ${p.cat==id?"checked":""}></label>`).join("")||'<span class="mu">ไม่มีสินค้า</span>';
+};
+window.catSave=async()=>{
+const id=$("#cas").value;if(!id)return;
+try{for(const c of document.querySelectorAll(".cpk")){const p=products.find(x=>x.id==c.value);
+if(c.checked&&p.cat!=id)await db.doc("products/"+p.id).update({cat:id});
+else if(!c.checked&&p.cat==id)await db.doc("products/"+p.id).update({cat:""})}
+await load();render();say("บันทึกแล้ว",1)}catch(e){say(ERR(e))}
+};
+/* ===== reveal animation ===== */
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.08});
+const reveal=()=>document.querySelectorAll("#app .p,#app .c,#app .ct,#app .st div").forEach((e,i)=>{if(e.classList.contains("rv0"))return;e.classList.add("rv0");e.style.transitionDelay=Math.min(i%6,5)*50+"ms";io.observe(e)});
+const _g=grid;grid=function(){_g();reveal()};
+/* ===== หลัง render ===== */
+function post(){
+const app=$("#app");if(!app)return;
+document.body.classList.toggle("catbig",site.catStyle=="big");
+app.classList.toggle("ctr",tab=="me");
+const hd=app.querySelector("header");
+if(me&&me.role=="admin"&&accts.length){
+const st={u:accts.length,o:allOrders().length,s:allTop.filter(t=>t.status=="approved").reduce((x,t)=>x+t.amount,0)};
+if(!site.stats||site.stats.u!=st.u||site.stats.o!=st.o||site.stats.s!=st.s){site.stats=st;db.doc("settings/site").set({...site,stats:st}).catch(()=>{})}
+}
+if(tab=="shop"&&hd){
+let h="";
+if(me&&me.role=="admin"){const n=allTop.filter(t=>t.status=="pending").length;
+h+=`<div class="c r" style="cursor:pointer" onclick="adminGate()"><div><h3>💰 รายการเติมเงิน / สลิป</h3><div class="mu">ต้องใส่รหัสแอดมินก่อนเข้า</div></div><span class="chip ${n?"rejected":""}">${n} รอตรวจ</span></div>`}
+if(site.showStat&&site.stats)h+=`<div class="st"><div><b>${site.stats.u}</b><span>ลูกค้าทั้งหมด</span></div><div><b>${site.stats.o}</b><span>การซื้อ</span></div><div><b>${site.stats.s}</b><span>ยอดขาย (บาท)</span></div></div>`;
+hd.insertAdjacentHTML("afterend",h);
+if(site.lineUrl||site.email)app.insertAdjacentHTML("beforeend",`<div class="mu" style="text-align:center;margin-top:26px">ติดต่อสอบถาม</div><div class="ctl">${site.lineUrl?`<a href="${esc(site.lineUrl)}" target="_blank" rel="noopener" style="background:#06C755" aria-label="LINE">${SVG_LINE}</a>`:""}${site.email?`<a href="mailto:${esc(site.email)}" style="background:#ea4335;color:#fff" aria-label="อีเมล">${SVG_MAIL.replace(/22/g,"28")}</a>`:""}</div>`);
+}
+if(tab=="admin"&&asub=="cats"){
+app.insertAdjacentHTML("beforeend",`<div class="c"><h3>รูปแบบหมวดหมู่</h3><select id="cst" style="max-width:100%"><option value="circle">วงกลมเล็ก</option><option value="big"${site.catStyle=="big"?" selected":""}>การ์ดใหญ่</option></select><div style="margin-top:10px"><button class="b sm" onclick="sv({catStyle:$('#cst').value})">บันทึก</button></div></div><div class="c"><h3>ใส่สินค้าเข้าหมวด</h3><select id="cas" style="max-width:100%" onchange="catPick()">${cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select><div id="cap" style="margin-top:8px"></div><button class="b sm" style="margin-top:10px" onclick="catSave()">บันทึกสินค้าในหมวด</button></div>`);catPick();
+}
+if(tab=="admin"&&asub=="settings")app.insertAdjacentHTML("beforeend",`<div class="c"><h3>ติดต่อ / สถิติ / ยืนยันมนุษย์</h3><label class="mu">ลิงก์ LINE</label><input id="ln1" value="${esc(site.lineUrl||"")}" placeholder="https://line.me/ti/p/..."><label class="mu">อีเมลร้าน</label><input id="em1" value="${esc(site.email||"")}"><label class="cl">โชว์สถิติหน้าแรก<input type="checkbox" id="ss1" style="width:20px;height:20px;margin:0" ${site.showStat?"checked":""}></label><label class="mu">Turnstile Site Key (ไม่ใส่ = ใช้โจทย์เลข)</label><input id="ts1" value="${esc(site.tsKey||"")}"><button class="b" style="margin-top:10px" onclick="sv({lineUrl:$('#ln1').value.trim(),email:$('#em1').value.trim(),showStat:$('#ss1').checked,tsKey:$('#ts1').value.trim()})">บันทึก</button></div>`);
+reveal();
+}
+const _r=render;render=function(){_r();try{post()}catch(e){console.error(e)}};
+try{render()}catch(e){}
+})();
+</script>
+
+
+  
+</body></html>
